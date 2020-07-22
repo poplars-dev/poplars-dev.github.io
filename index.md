@@ -9,9 +9,9 @@ Our focus is building quality customizations to
 [Sage 300](https://www.sage.com) using modern
 software development techniques and best practices to make Sage work for you. 
 
-We develop customizations using 
+We build using 
 [Orchid Extender](https://www.orchid.systems/product/extender), 
-the most flexible platform for the rapid development of Sage Customizations.
+the most flexible platform for the rapid development of Sage customizations.
 Coupled with [Customization Manager](/customizations.html), higher quality
 customizations can be developed and distributed in less time through code
 reuse.
