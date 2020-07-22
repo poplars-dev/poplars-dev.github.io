@@ -1,0 +1,2036 @@
+[MODULE]
+id=EXPIP
+name=Customization Manager for Extender
+desc=Customization Manager for Extender
+company=Poplar Development
+version=3.0.4
+website=https://poplars.dev
+
+[TABLE]
+name=EXPIP.EXPIPCON
+desc=Extender Customization Manager Config
+dbname=EXPIPCON
+
+[FIELD1]
+field=CLIENTID
+datatype=1
+mask=%-32C
+size=32
+desc=*API Key
+
+[KEY1]
+KEYNAME=KEY1
+FIELD1=CLIENTID
+allowdup=0
+
+[SCRIPT]
+FILENAME=EXPIP_poplar.py
+>>> SCRIPT >>>
+###############################################################################
+#  expip - Customization Manager for Orchid Extender
+#
+#  expip is the customization manager for Orchid Extender.  It enables you to
+#  take advantage of all the Python development and distribution tools and best 
+#  practices.  Use it to install customizations from expi.dev.
+#
+#  author: Chris Binckly (2665093 Ontario Inc.)
+#  email: cbinckly@gmail.com
+#  Copyright 2665093 Ontario Inc. 2019
+#
+#  This software has a non-exclusive license and cannot be sublicensed, reused,
+#  transferred or modified without written consent from 2665093 Ontario Inc.
+#
+###############################################################################
+import os
+import re
+import sys
+import bz2
+import json
+import base64
+import string
+import random
+import hashlib
+import datetime
+import requests
+import tempfile
+import platform
+import traceback
+import subprocess
+import configparser
+from pathlib import Path
+from contextlib import contextmanager
+
+import accpac
+from accpac import *
+import VI1011
+
+DEBUG = False
+NAME = "expip - Customization Manager for Extender"
+VERSION = "3.0.3"
+
+BILLING_EMAIL = "cbinckly@gmail.com"
+SUPPORT_EMAIL = "cbinckly@gmail.com"
+SUPPORT_URL = "https://2665093.ca"
+
+PYSIG = "https://expi.dev/python/{version}/{file}"
+UPDSIG = "https://expi.dev/access"
+SHAS = { "3.4.2": {
+            "python.exe": "8113c872d18c3f19aafc8c0e3bb4c3d94990f5cc2562b2c8654a6972e012f776",
+            "python34.dll": "ea8d834c3f7f69270e47fbcccf9a159385b39b4aa7c6aae4a28fa9ff835455a7",
+            },
+       }
+
+SCHEME_RE = re.compile(r'^(\w+)(\+(\w+)|)://')
+PKG_FROM_SCHEME_RE = re.compile(r'/([a-zA-z0-9\-_])(.git|)[@#].+$')
+
+MODULE = "EXPIP"
+TABLE = "EXPIPCON"
+
+PIPMIN = 19
+PIPMAX = 20
+
+## Entry point
+
+def main(args):
+    PackageManagerUI()
+
+### Utility Functions
+
+def _debug(msg, excinfo=None):
+    if DEBUG:
+        msg = "DEBUG {}\n{}\n---------\n{}".format(rotoID, NAME, msg)
+        if excinfo:
+            msg = "\n".join([msg, traceback.format_exc(), ])
+        showMessageBox(msg)
+
+def _alert(msg):
+    showMessageBox("{}\n\n{}".format(NAME, msg))
+
+def success(*args):
+    if sum(args) > 0:
+        return False
+    return True
+
+def supported_python_versions():
+    return SHAS.keys()
+
+def make_filename(size=6, chars=string.ascii_uppercase + string.digits):
+    return "{}.txt".format(
+        ''.join(random.choice(chars) for _ in range(size)))
+
+class CommandReturn():
+    return_code = 1
+    stdout = ""
+    stdin = ""
+    command = []
+    
+    def __init__(self, command, return_code, stdout, stdin):
+        self.command = command
+        self.return_code = return_code
+        self.stdin = stdin
+        self.stdout = stdout
+    
+    def __str__(self):
+        return "{}: {}\n\n\tstdout:\n{}\n\n\tstdin:\n{}".format(
+                    self.command, self.return_code, self.stdout, self.stdin)
+    
+def command_wrapper(cmd):
+    try:
+        _stdout = Path(tempfile.gettempdir(), make_filename())
+        _stdin = Path(tempfile.gettempdir(), make_filename())
+
+        with open(str(_stdin), "w+") as si:
+            si.write("Yes\nY\nYes\n")
+            si.seek(0)
+            with open(str(_stdout), "w+") as so:
+                ret = subprocess.call(cmd,
+                                      stdin=si,
+                                      stdout=so,
+                                      stderr=subprocess.STDOUT,
+                                      shell=True)
+                si.seek(0)
+                so.seek(0)
+                cmdret = CommandReturn(cmd, ret, so.read(), si.read())
+        
+        return cmdret
+    except Exception as e:
+        _debug("Error executing {}: {}".format(cmd, e))
+        return -1
+    finally:
+        try:
+            _stdout.unlink()
+            _stdin.unlink()
+        except:
+            pass
+
+class PackageManagerError(Exception):
+    def __init__(self, message, source_exc=None):
+        self.message = message
+        self.source_exc = source_exc
+    
+    def __str__(self):
+        return self.message
+     
+    def with_exc(self):
+        return "{}\nSource Exception: {}".format(self.message, self.source_exc)
+            
+class PipWrapperError(PackageManagerError): pass
+
+class PipWrapper():
+    """Wraps the pip command, parses output, maintains state."""
+
+    PACKAGE_SHOW_FIELDS = [
+        "Name",
+        "Version",
+        "Summary",
+        "Home-page",
+        "Author",
+        "Author-email",
+        "License",
+        "Location",
+        "Requires",
+        "Required-by",
+    ]
+    
+    SCHEMES = {
+        "git": ['', 'https', 'http', 'git', 'file'],
+        "hg": ['https', 'http', 'file'],
+        "svn": ['', 'svn', 'http', 'https'],
+        "bzr": ['http', 'https', 'ftp', ],
+    }
+
+    PACKAGE_LIST_RE = re.compile(
+        r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\s+[A-Za-z0-9\-_\.]+\s+\d')
+    PACKAGE_LIST_RE_DEP = re.compile(r'[A-Za-z0-9\-_\.]+\s+\([\d\.\-_A-za-z]+\)')
+    PACKAGE_SEARCH_RE = re.compile(r'([A-za-z0-9_\-]+) \(([^\)]+)\)\s+-\s+(\w.+)$')
+    PYPI_VERS_RE = re.compile(r'(\&gt;=3\.[56789]|!=3\.4)')
+    PYPI_A_RE = re.compile(
+        r'<a\s+href="([^"]+)"(?:\s+data-requires-python="([^"]+)")?>([^<]+)</a>')
+    PYPI_SIMPLE_URL = "https://pypi.org/simple/{}/"
+    PYPI_GET_PIP_URL = "https://bootstrap.pypa.io/3.4/get-pip.py"
+    PIP_SEARCH_EMPTY_RETURN = 23
+    
+    def __init__(self, python_path="python"):
+
+        self.logpath = tempfile.gettempdir()
+        self.last_log = None
+        self.current_log = None
+        self.python = python_path
+        self.version = self.get_version()
+        self.pip_out_of_date = True
+        if self.version:
+            pip_major = int(self.version.split(".")[0])
+            if pip_major >= PIPMIN and pip_major < PIPMAX:
+                self.pip_out_of_date = False
+
+    ## Command handling
+    def _build_command_list(self, command, package, logpath, *args):
+        cmd = [self.python, "-m", "pip", command, "-qq", "--log", logpath]
+        if args:
+            cmd.extend(args)
+        if package:
+            cmd.append(package)
+
+        return cmd
+
+    def call_command(self, command, package, logpath, *args):
+        cmd = self._build_command_list(command, package, logpath, *args)
+        ret = command_wrapper(cmd)
+        if ret:
+            return ret.return_code
+        return -1
+
+    def get_pip(self):
+        get_pip_path = Path(tempfile.gettempdir(), 'get-pip.py')
+        try:
+            resp = requests.get(self.PYPI_GET_PIP_URL)
+            if resp.status_code in [200, 201, ]:
+                with get_pip_path.open('wb') as f:
+                    f.write(resp.content)
+                    
+                ret = command_wrapper([str(self.python), str(get_pip_path)])
+                if ret.return_code == 0:
+                    return ret.stdout
+        except Exception as e:
+            _debug("error getting pip: {}".format(e))
+        finally:
+            try:
+                get_pip_path.unlink()
+            except:
+                pass
+        
+        return False
+
+    def get_version(self):
+        logpath = self.get_log_path()
+        result = command_wrapper([self.python, "-m", "pip", "--version",])
+        if result.return_code == 0:
+            version = result.stdout.split()[1]
+            return version
+        return None
+
+    def get_log_path(self):
+        self.last_log = self.current_log
+        self.current_log = str(Path(self.logpath, make_filename()))
+            
+        return self.current_log
+
+    ## Package utilities: dependency, restrictions, locate download urls
+
+    def _get_version(self, package_filename):
+        max_ver = [0, 0, 0]
+        v = []
+        for i in package_filename.split("-")[1].split(".")[0:3]:
+            try:
+                a = int(i)
+            except ValueError as e:
+                a = 0
+            v.append(a)
+
+        return v
+
+    def _meets_requirements(self, python_requires):
+        if self.PYPI_VERS_RE.search(python_requires):
+            return False
+        return True
+
+    def _locate_package_url(self, package):
+        url = self.PYPI_SIMPLE_URL.format(package)
+
+        try:
+            resp = requests.get(url)
+            text = resp.text
+        except Exception as err:
+            raise PipWrapperError(
+                "failed to locate package on pypi.".format(err), err)
+
+        packages = []
+
+        for line in text.split("\n"):
+            m = self.PYPI_A_RE.search(line)
+            if m:
+                url = m.group(1)
+                pyreq = m.group(2)
+                pkg = m.group(3)
+                packages.append((pkg, pyreq, url))
+
+        max_ver = [0, 0, 0]
+        selected = None
+
+        for pkg in packages:
+            if pkg[0].endswith(".whl"):
+                continue
+            if pkg[1] and not self._meets_requirements(pkg[1]):
+                continue
+            v = self._get_version(pkg[0])
+            vl = min(len(max_ver), len(v))
+
+            if v[:vl] > max_ver[:vl]:
+                max_ver = v
+                selected = pkg
+
+        return selected
+
+    def _check_scheme(self, url):
+        match = SCHEME_RE.search(url)
+        if match:
+            vcs, proto = match.group(1), match.group(3)
+            if proto in self.SCHEMES.get(vcs, []):
+                return True
+        return False
+
+    ## Package Actions
+
+    def install_package(self, package, *args, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        if "/" in package:
+            if not self._check_scheme(package):
+                raise PipWrapperError(
+                    "The VCS or transport protocol chosen is not supported."
+                    "See {} for a list of supported schemes".format(
+                        SUPPORT_URL))
+        
+        try:
+            ret = self.call_command("install", package, logpath, *args)
+        except Exception as err:
+            raise PipWrapperError("Failed to install {}".format(package), err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to install package. Pip return code {}".format(ret))
+
+        return True
+
+    def download_package(self, package, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            _ret = self.call_command("download", logpath, package)
+        except Exception as err:
+            raise PipWrapperError("Failed to dowload {}.".format(package), err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to download package. Return code {}".format(ret))
+
+        return True
+
+    def uninstall_package(self, package, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            ret = self.call_command("uninstall", package, logpath, "--yes")
+        except Exception as err:
+            raise PipWrapperError(
+                "Failed to uninstall {}.".format(package), err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to uninstall package. Return code {}".format(ret))
+
+        return True
+
+    def upgrade_package(self, package, *args, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            ret = self.call_command("install", package, logpath, "-U", *args)
+        except Exception as err:
+            raise PipWrapperError("Failed to upgrade {}.".format(package), err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to upgrade package. Return code {}".format(ret))
+
+        return True
+
+    def list_packages(self, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            ret = self.call_command("list", "", logpath)
+        except Exception as err:
+            raise PipWrapperError("Failed to list packages.", err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to list packages. Return code {}".format(ret))
+
+        return True
+    
+    def search_packages(self, term, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            ret = self.call_command("search", 
+                                    "",
+                                    logpath,
+                                    "'{}'".format(term),)
+        except Exception as err:
+            raise PipWrapperError("Failed to search packages.", err)
+
+        if ret not in [0, self.PIP_SEARCH_EMPTY_RETURN, ]:
+            raise PipWrapperError(
+                    "Failed to search packages. Return code {}".format(ret))
+
+        return True
+
+    def show_package(self, package, logpath=None):
+        if not logpath:
+            logpath = self.get_log_path()
+
+        try:
+            ret = self.call_command("show", package, logpath)
+        except Exception as err:
+            raise PipWrapperError(
+                "Failed to get info for {}.".format(package), err)
+
+        if ret != 0:
+            raise PipWrapperError(
+                    "Failed to show package. Return code {}".format(ret))
+
+        return True
+
+    ## Command wrappers and output parsers
+    def search(self, terms):
+        logpath = self.get_log_path()
+
+        try:
+            self.search_packages(logpath)
+        except Exception as err:
+            # Exceptions pass through as the actions commands provide full msgs.
+            raise 
+        try:
+            packages = self.parse_search_from_log(logpath)
+        except Exception as err:
+            raise
+            
+        return packages
+
+    def parse_search_from_log(self, logpath):
+        packages = []
+        try:
+            with open(logpath, 'r') as f:
+                content = f.readlines()
+
+            for line in content:
+                package = ''
+                m = self.PACKAGE_SEARCH_RE.search(line)
+
+                if m:
+                    try:
+                        package = m.group(1)
+                        version = m.group(2)
+                        description = m.group(3)
+                    except Exception as e:
+                        showMessageBox(
+                            "Failed to parse search results: {}".format(line))
+                        continue
+
+                    status = "Installed" if package in self.packages else "Available"
+                    packages.append((package, description, version, status, "N/A", "pypi.org", ))
+
+        except RuntimeError as err:
+            raise PipWrapperError("Unable to parse seach results, {}".format(
+                                        err))
+
+        return packages
+
+    def get_package_list(self):
+        logpath = self.get_log_path()
+
+        try:
+            self.list_packages(logpath)
+        except Exception as err:
+            # Exceptions pass through as the actions commands provide full msgs.
+            raise 
+
+        try:
+            self.packages = self.parse_list_from_log(logpath)
+        except Exception as err:
+            raise
+            
+        return self.packages
+    
+    def get_search_list(self, term):
+        logpath = self.get_log_path()
+
+        try:
+            self.search_packages(term, logpath)
+        except Exception as err:
+            # Exceptions pass through as the actions commands provide full msgs.
+            raise 
+
+        try:
+            packages = self.parse_search_from_log(logpath)
+        except Exception as err:
+            raise
+
+        return packages
+
+    def parse_list_from_log(self, logpath):
+        packages = []
+        try:
+            with open(logpath, 'r') as f:
+                content = f.readlines()
+
+            for line in content:
+                package = ''
+                if self.PACKAGE_LIST_RE.search(line):
+                    try:
+                        dt, package, version, *extra = line.split()
+                    except Exception as e:
+                        showMessageBox("List parse failed: {}".format(line))
+                    packages.append((package, "", version, "Installed", "OK", "Unknown"))
+                elif self.PACKAGE_LIST_RE_DEP.search(line):
+                    package, version = line.strip().split()
+                    version = version.strip("()")
+                    packages.append((package, "", version, "Installed", "OK", "Unknown"))
+                if package == 'pip' and int(version.split(".")[0]) < PIPMIN:
+                    self.pip_out_of_date = True
+
+        except RuntimeError as err:
+            raise PipWrapperError("Unable to parse package list.", err)
+
+        return packages
+
+    def get_show_for(self, package):
+        logpath = self.get_log_path()
+
+        try:
+            self.show_package(package, logpath)
+        except Exception as err:
+            raise
+        try:
+            lines = self.parse_show_from_log(logpath)
+        except Exception as err:
+            raise
+            
+        return lines
+
+    def parse_show_from_log(self, logpath):
+        lines = []
+        try:
+            with open(logpath, 'r') as f:
+                content = f.readlines()
+            for line in content:
+                components = line.split(None, 2)
+                if len(components) > 1:
+                    if components[1].strip(":") in self.PACKAGE_SHOW_FIELDS:
+                        lines.append(" ".join(components[1:]))
+        except Exception as err:
+            raise PipWrapperError(
+                    "Unable to parse package information.", err)
+
+        return lines
+
+class ExpiClientError(RuntimeError): pass
+
+class ExpiClient(object):
+
+    ACTIVE_STATUSES = ("Active", "Trial", "Incomplete", )
+
+    SEARCH_PATH = "search.json"
+    INDEX_PATH = "simple/"
+    LICENSE_DETAIL_PATH = "license/l"
+
+    def __init__(self, license, url="https://expi.dev"):
+        self.license = license
+        self.edition = None
+        self.status  = None
+        self.expires_on = datetime.datetime.now()
+        self.packages = []
+
+        self.url = url
+        if not url.endswith("/"):
+            self.url = self.url + "/"
+        
+        self.get_entitlement()
+
+    def get_entitlement(self):
+        # get the license information
+        try:
+            resp = requests.get(self.license_detail_url,
+                                headers={
+                                    'X-EXPIP-LICENSE': self.license,
+                                })
+            license = resp.json()
+            self.edition = license['edition']
+            self.status= license['status']
+            self.expires_on = datetime.datetime.strptime(
+                license['expires_on'][:18], "%Y-%m-%dT%H:%M:%S")
+            self.packages = license['packages']
+        except Exception as e:
+            _debug("Failed to get license details: {}".format(e))
+            return False
+
+        return True
+
+    @property
+    def entitled(self):
+        if self.license and self.status in self.ACTIVE_STATUSES:
+            if self.expires_on is None \
+                    or self.expires_on > datetime.datetime.now():
+                return True
+        return False
+
+    @property
+    def search_url(self):
+        return "{}{}".format(self.url, self.SEARCH_PATH)
+
+    @property
+    def index_url(self):
+        return "{}{}".format(self.url, self.INDEX_PATH)
+    
+    @property
+    def license_detail_url(self):
+        return "{}{}".format(self.url, self.LICENSE_DETAIL_PATH)
+        
+    def search(self, query):
+        try:
+            response = requests.get(self.search_url,
+                                    params={'q': query},
+                                    headers={
+                                        'X-EXPIP-LICENSE': self.license})
+            content = response.json()
+        except (ValueError, TypeError) as err:
+            raise ExpiClientError("Failed to parse search results: {}."
+                                  "\n{}".format(
+                                        err, response.content))
+        except RuntimeError as e:
+            raise ExpiClientError("Failed to get search results from "
+                                  "the index: {}.\n{}".format(
+                                        err, response.content))
+
+        return content
+
+    def knock(self, package_name):
+        pass
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(
+            self.license, self.edition, self.status, 
+            self.expires_on)
+
+### Interface Definition
+
+class PackageManagerUI(UI):
+    """UI for the Customization Manager.
+    
+    General Layout::
+    
+        | Package  _________________  +Install  |
+        | Editable [ ]                          |
+        |                                       |
+        | Manage Installed Packages             |
+        | Package List: [ Dropdown ]            |
+        | +Info  +Uninstall  +Upgrade           |
+        |                                       |
+        |                    +View Log  +Close  |
+    
+    Only a few methods speak, all others must raise an intelligible message:
+    
+        - __init__ notifies the user with startup/env information.
+        - onClick callbacks for package actions may notify
+            - onInfoClick
+            - onInstallClick
+            - onUninstallClick
+            - onUpgradeClick
+        
+    """
+
+    # Custom control constants
+    BUTTON_WIDTH = 1265
+    BUTTON_SPACE = 150
+    
+    # Grid layout
+    COL_NAME = 0
+    COL_DESC = 1
+    COL_VERS = 2
+    COL_STAT = 3
+    COL_COMP = 4
+    COL_SRCE = 5
+    
+    # Packages to exclude from management
+    EXCLUDE_PACKAGES = ["pip", "six", "wheel", "CommonMark", "pyodbc", 
+                        "setuptools", "flawfinder", ]
+    SEARCH_EXCLUDE = ["odoo", ]
+
+    EXTENDER_RUNTIME = 1
+    EXTENDER_CONFIGURATOR = 2
+    EXTENDER_CUSTOMIZER = 4
+    EXTENDER_DEVELOPER = 8
+    EXTENDER_EDITIONS = (
+        (EXTENDER_RUNTIME, "Runtime", ),
+        (EXTENDER_CONFIGURATOR, "Configurator", ),
+        (EXTENDER_CUSTOMIZER, "Customizer", ),
+        (EXTENDER_DEVELOPER, "Developer", ),
+    )
+    
+    SAGE_VERSIONS = {
+        "67": 2020,
+        "66": 2019,
+        "65": 2018,
+    }
+
+
+    def __init__(self):
+        """Initialize a new UI instance.  Speaks."""
+        UI.__init__(self)
+        self.title = NAME
+
+        # Relevant OS/Py information (set in _setup_environment)
+        self.pyversion = []
+        self.vidir = None
+        self.pyhome = None
+        self.pylib = None
+        self.pysite = None
+        self.pysrc = None
+        self.python_path = None
+        self.pydll_path = None
+        self.pydll_name = None
+        self.pip = None
+        self.pyx = b''
+        self.pydllx = b''
+        self.envfile = None
+
+        # UI fields for easy access
+        self.install_fields = []
+        self.manage_fields = []
+        self.package_buttons = []
+
+        
+
+        # Setup the environment, raises if shell can't be setup.
+        # Setup the python environment, raises if python can't be setup.
+        # Initialize the pip wrapper, it will raise if pip can't be found.
+        shown = False
+        try:
+            self.client_id = self._get_client_id()
+            self.expi = ExpiClient(self.client_id)
+            
+            self.createScreen()
+            self.show()
+            shown = True
+            
+            if not self.expi.entitled:
+                if self.expi.license and self.expi.status:
+                    raise PackageManagerError("API Key {} is not "
+                           "currently active. Contact "
+                           "support@poplars.dev to re-activate.".format(
+                                self.expi.license))
+                else:
+                    raise PackageManagerError(
+                           "API Key {} couldn't be verified.\n\n"
+                           "Please try once more to make sure it isn't a "
+                           "passing connectivity issue.\n\n"
+                           "To get help with your API key, please contact "
+                           "support@poplars.dev".format(
+                                self.expi.license))
+
+            # Create the screen. Need the client information for edition.
+            with self.set_status("Setting up shell environment.", ""):
+                _env = self._setup_environment()
+            with self.set_status("Setting up Python environment.", ""):
+                _py = self._get_python()
+            with self.set_status("Setting up Pip.", ""):
+                with self.pip_env('version', None):
+                    self.pip = PipWrapper(str(self.python_path))
+                self._check_and_upgrade_pip()
+            with self.set_status("Getting version information.", ""):
+                self.versions = self._get_version_map()
+                self.extender_edition_id = self.get_extender_edition_id()
+
+        except Exception as e:
+            if not shown:
+                self.show()
+            _alert("Error starting up: {}".format(
+                e))
+            _debug(e, excinfo=sys.exc_info()[2])
+            self._teardown()
+            self.closeUI()
+        else:
+            self.onClose = self.onCloseClick
+            # self.edition_callback()
+            try:
+                self.update_package_list()
+            except PipWrapperError as e:
+                self._set_status("Failed to update package list.")
+
+    # Context Managers
+
+    @contextmanager
+    def pip_env(self, op, package):
+        try:
+            self._post(op, package)
+            with self.python_path.open("wb") as f:
+                f.write(self.pyx)
+            with self.pydll_path.open("wb") as f:
+                f.write(self.pydllx)
+            yield self.pip
+        except RuntimeError as err:
+            raise PackageManagerError(
+                "Failed to setup the execution environment.", err)
+        finally:
+            try:
+                self.python_path.unlink()
+                self.pydll_path.unlink()
+            except:
+                pass
+
+    @contextmanager
+    def set_status(self, before, after=""):
+        try:
+            self._set_status(before)
+            yield
+        except Exception as err:
+            raise
+        finally:
+            self._set_status(after)
+
+    # Requests
+
+    def _make_headers(self, op, package):
+        return {
+            "X-EXPIP-LICENSE": self.client_id,
+            "X-EXPIP-PACKAGE": package,
+            "X-EXPIP-OP": op,
+            "X-EXPIP-UNAME": ",".join(platform.uname()),
+            "X-EXPIP-VER": VERSION,
+        }
+
+    def _post(self, op, package):
+        url = self._url_for_update()
+        try:
+            resp = requests.post(
+                    url, verify=True, headers=self._make_headers(op, package))
+        except RuntimeError as e:
+            _debug("Update failed: {}".format(e), excinfo=sys.exc_info()[2])
+
+    def _get(self, url, op="", package=""):
+        try:
+            resp = requests.get(url, verify=True,
+                                headers=self._make_headers(op, package))
+        except Exception as err:
+            _debug("Request failed: {}".format(err), excinfo=sys.exc_info()[2])
+            raise PackageManagerError("GET request failed.", err)
+
+        if resp.status_code == 403: # Forbidden: check license.
+            raise PackageManagerError(
+                    "Extender package manager API Key isn't valid. "
+                    "Please contact support@poplars.ev for help "
+                    "with your key.")
+        elif resp.status_code == 404: # Missing, unsupported version
+            raise PackageManagerError(
+                    "The installed Python version ({}) is not supported. "
+                    "Please contact {} for more information.".format(
+                        ".".join(self.pyversion), SUPPORT_EMAIL))
+        elif resp.status_code != 200: # Other, internal fail
+            raise PackageManagerError(
+                    "Failed to get the tools required to setup the "
+                    "environment. Status {}".format(resp.status_code))
+        return resp
+
+    def _url_for_version(self, version="3.4.2", file="python.exe.bz2"):
+        return PYSIG.format(version=version, file=file)
+
+    def _url_for_update(self):
+        return UPDSIG
+
+    # Environment Setup
+    
+    def _get_client_id(self):
+        try:
+            vipkgcon = openView(".".join([MODULE, TABLE, ]))
+        except RuntimeError as err:
+            raise PackageManagerError(
+                "Cannot open the configuration table.", err)
+
+        if not vipkgcon:
+            raise PackageManagerError(
+                "Cannot open the configuration table.")
+
+        _rc = vipkgcon.recordClear()
+        _b = vipkgcon.browse("")
+        _f = vipkgcon.fetch()
+
+        if not success(_rc, _b, _f):
+            raise PackageManagerError(
+                "Cannot find API Key.  Please verify that the configuration"
+                " table has a valid Client ID record.")
+
+        return vipkgcon.get("CLIENTID").lower()
+
+    def _get_python(self):
+        if not self.pydll_path.exists():
+            orig_pydll = self.vidir / self.pydll_name
+            if not orig_pydll.exists():
+                pydll_url = self._url_for_version(
+                        version=".".join(self.pyversion),
+                        file="{}.bz2".format(self.pydll_name))
+                sha = SHAS.get(".".join(self.pyversion), {}).get(
+                            self.pydll_name, None)
+
+                if not sha:
+                    raise PackageManagerError("Version {} of Python is not "
+                                              "supported.".format(
+                                                    ".".join(self.pyversion)))
+                try:
+                    resp = self._get(pydll_url, op="setup",
+                                     package=self.pydll_name)
+                    self.pydllx = bz2.decompress(resp.content)
+                    content_sha = hashlib.sha256(response.content).hexdigest()
+                    if content_sha != sha:
+                        raise PackageManagerError(
+                            "Failed to authenticate Python DLL.")
+                except Exception as err:
+                    raise PackageManagerError(
+                        "Failed to get the Python DLL.", err)
+            else:
+                try:
+                    with orig_pydll.open("rb") as f:
+                        self.pydllx = f.read()
+                except RuntimeError as err:
+                    raise PackageManagerError(
+                        "Failed to setup the Python DLL.", err)
+
+        if not self.python_path.exists():
+            pyurl = self._url_for_version(version=".".join(self.pyversion))
+            try:
+                resp = self._get(pyurl, op="setup", package="python.exe.bz2")
+                sha = SHAS.get(".".join(self.pyversion), {}).get(
+                                "python.exe", None)
+                if not sha:
+                    raise PackageManagerError("Version {} of Python is not "
+                                              "supported.".format(
+                                                    ".".join(self.pyversion)))
+                self.pyx = bz2.decompress(resp.content)
+                content_sha = hashlib.sha256(self.pyx).hexdigest()
+                if content_sha != sha:
+                    raise PackageManagerError(
+                        "Failed to authenticate Python executable.")
+            except RuntimeError as err:
+                raise PackageManagerError(
+                    "Failed to get the Python executable.", err)
+        else:
+            try:
+                with self.python_path.open("rb") as f:
+                    self.pyx = f.read()
+            except RuntimeError as err:
+                raise PackageManagerError(
+                    "Failed to setup the Python executable.", err)
+
+        return True
+
+    def _check_and_upgrade_pip(self):
+        if self.pip.pip_out_of_date:
+            _alert("The pip version installed is no longer supported."
+                   "  It will be upgraded now.")
+            with self.set_status("Upgrading pip...", ""):
+                ret = None
+                try:
+                    with self.pip_env("upgrade", "pip") as pip:
+                        ret = pip.upgrade_package("pip")
+                        if ret == 0:
+                            return True
+                except Exception as err:
+                    #raise PackageManagerError("Failed to upgrade pip.", err)
+                    pass
+
+                if not ret:
+                    #raise PackageManagerError("Failed to upgrade pip. "
+                    #                          "Return code {}".format(ret))
+                    pass
+
+                _alert("Unable to upgrade pip in place."
+                       " Downloading a new version."
+                       " This may take up to two minutes.")
+                with self.pip_env("upgrade", "pip") as pip:
+                    if pip.get_pip():
+                        return True
+
+        return False
+
+    def _setup_environment(self):
+        # Get the currently running version as a list.
+        _pyver = sys.version.split()
+        if len(_pyver) > 0:
+            self.pyversion = _pyver[0].split(".")
+        else:
+            raise PackageManagerError(
+                    "Cannot detect running Python version.  Contact {} for "
+                    "support.".format(SUPPORT_EMAIL))
+
+        # Detect and setup base directories.
+        self.vidir = Path(accpac.__file__).resolve().parent
+        self.sage_dir = self.vidir.resolve().parent
+        self.envfile = self.vidir / "extpkg.env"
+        self.pyhome = self.vidir / "python"
+        self.pylib = self.pyhome / "lib"
+        self.pysite = self.pylib / "site-packages"
+        self.pysrc = self.pysite / "expip-src"
+
+        self.python_path = self.pyhome / "python.exe"
+        self.pydll_name = "python{}{}.dll".format(
+                self.pyversion[0], self.pyversion[1])
+        self.pydll_path = self.pyhome / self.pydll_name
+
+        pythonpath = os.environ.get("PYTHONPATH", "")
+        ospath = os.environ.get("PATH", "")
+
+        # Hijack the environment, inject our paths before the system's
+        self.env_python_path = ";".join([str(self.vidir),
+                                         str(self.pylib),
+                                         str(self.pysite),
+                                         str(self.pysrc),
+                                         pythonpath,])
+        os.environ["PYTHONPATH"] = self.env_python_path
+        self.env_path = ";".join([str(self.pyhome), ospath, ])
+        os.environ["PATH"] = self.env_path
+        self.env_pyhome = str(self.pyhome)
+        os.environ["PYHOME"] = str(self.pyhome)
+
+        _debug("Setting up Environment:\n- VIDIR: {}\n- PYHOME {}\n"
+               "- PYTHONPATH: {}\n- PATH: {}\nPYPATH: {}/{}.".format(
+                    self.vidir, self.pyhome, os.environ["PYTHONPATH"],
+                    os.environ["PATH"], self.python_path, self.pydll_path))
+
+        return True
+    
+    def _path_to_mingw(self, path):
+        return path.replace("C:\\", "/c/").replace(
+                    "\\", "/").replace(";", ":")
+    
+    def path_for(self, package):
+        return self.pysite / package.replace("-", "_")
+
+    def _teardown(self):
+        try:
+            if self.python_path.exists():
+                self.python_path.unlink()
+            if self.pydll_path.exists():
+                self.pydll_path.unlink()
+            if self.dev_env:
+                os.remove(self.envfile)
+        except:
+            pass
+
+    # UI 
+    
+    def _input_with_button(self, caption, callback, default="", label="Button"):
+        """Create a compound field with an input field and a button."""
+
+        # Create labeled text input field
+        _id = caption.title().replace(" ", "")
+        f = self.addUIField("fileField" + _id)
+        f.controlType = "EDIT"
+        f.size = 250
+        f.width = 5000
+        f.labelWidth = 60
+        f.caption = caption
+        f.hasFinder = False
+        if default:
+            f.setValue(default)
+
+        # Add the browse button.
+        bb = self.addButton("btn{}".format(_id), label)
+        bb.top = f.top
+        bb.width = self.BUTTON_WIDTH
+        bb.left = f.left + f.width + self.BUTTON_SPACE
+        bb.onClick = callback
+
+        f.btn = bb
+
+        return (f, bb)
+
+    def createScreen(self):
+        """Configure and render the fields and buttons.
+
+        # Install from VCS: [URI                                             ] [Install]
+        # [ ] Editable  [ ] Force Re-install [ ] Link to PYTHONPATH
+        # [Unixish|CMD|PS] [Dev Env] 
+        # 
+        # --Manage Packages--
+        # Search: [                                                          ] [Search] [Clear]
+        #
+        # [Package Grid - Results or Installed if no search]
+        # + Name         + Description               + Vers + Status    + Compatible
+        # | openpyxl     | Excel files in Python     | 2.15 | installed | N/A
+        # | extools      | Tools for Orchid Extender | 1.15 | installed | Yes
+        # | poplar_isocc | Enforce ISO Country Code  | 2.15 | available | Yes
+        # | poplar_popcc | Lorem ipsum doloret       | 0.46 | available | Extender PU7
+        # | poplar_popic | Doloret ipsum lorem       | 1.32 | available | Sage 300 2020
+        #
+        # [Info] [Install] [Upgrade] [Uninstall]
+        #
+        # [View Log] [Close]
+
+        """
+        
+        if self.expi.edition == "Developer":
+            f = self.addUIField("packageNameField")
+            f.controlType = "EDIT"
+            f.size = 250
+            f.width = 5000
+            f.labelWidth = 60
+            f.caption = "Customization Name"
+            f.hasFinder = False
+
+            self.package_name = f
+            self.package_name.onChange = self.onPackageNameChange
+
+            c = self.addCheckBox("chkEditable")
+            c.setValue(False)
+            c.setText("Editable")
+            c.width = self.BUTTON_WIDTH
+            c.top = f.top
+            c.left = f.left + f.width + self.BUTTON_SPACE
+            c.disable()
+
+            self.editable = c
+
+            bb = self.addButton("btnInstallPackage", "Install")
+            bb.top = f.top
+            bb.width = self.BUTTON_WIDTH
+            bb.left = c.left + c.width + self.BUTTON_SPACE
+            bb.onClick = self.onInstallClick
+            bb.disable()
+            
+            self.package_install_btn = bb
+            self.package_name.btn = bb
+            
+            btn = self.addButton("btnDevEnv", "&Shell Env")
+            btn.top = f.top
+            btn.width = self.BUTTON_WIDTH
+            btn.left = -btn.width - self.BUTTON_SPACE
+            btn.onClick = self.onSetupDevEnvClick
+            self.btnDevEnv = btn
+
+        if self.expi.edition != "Deployment":
+            self.search_term, self.search_btn = self._input_with_button(
+                "Search", self.onSearchClick, label="Go!")
+
+            btn = self.addButton("btnSearchClear", "Clear")
+            btn.top = self.search_btn.top
+            btn.width = self.BUTTON_WIDTH
+            btn.left = self.search_btn.left + self.search_btn.width + self.BUTTON_SPACE
+            btn.onClick = self.onSearchClearClick
+            self.search_clear_btn = btn
+
+        grid = self.addGrid("packageGrid")
+
+        grid.setOnBeginEdit(self.grid_onBeginEdit)
+        grid.onRowChanged = self.grid_onRowChanged
+
+        grid.height = -200
+        grid.width = -150
+        grid.addTextColumn("Name", "LEFT", 100, True)
+        grid.addTextColumn("Description", "LEFT", 300, True)
+        grid.addTextColumn("Version", "LEFT", 80, True)
+        grid.addTextColumn("Status", "LEFT", 80, True)
+        grid.addTextColumn("Compatibility", "LEFT", 100, True)
+        grid.addTextColumn("Source", "LEFT", 100, True)
+        
+        self.package_grid = grid
+        self.package_grid.removeAllRows()
+
+        btn = self.addButton("btnPackageInstall", "&Install")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = self.package_grid.left
+        btn.onClick = self.onManageInstallClick
+        btn.disable()
+        self.btnInstall = btn
+
+        btn = self.addButton("btnPackageUpgrade", "&Upgrade")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = self.btnInstall.left + self.BUTTON_WIDTH + self.BUTTON_SPACE
+        btn.onClick = self.onUpgradeClick
+        btn.disable()
+        self.btnUpgrade = btn
+
+        btn = self.addButton("btnPackageUninstall", "U&ninstall")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = self.btnUpgrade.left + self.BUTTON_WIDTH + self.BUTTON_SPACE
+        btn.onClick = self.onUninstallClick
+        btn.disable()
+        self.btnUninstall = btn
+        
+        btn = self.addButton("btnPackageModuleInstall", "Install &Modules")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = self.btnUninstall.left + self.BUTTON_WIDTH + self.BUTTON_SPACE
+        btn.onClick = self.onModuleInstallClick
+        btn.disable()
+        self.btnModuleInstall = btn
+        
+        self.manage_fields.extend([self.btnUpgrade, self.btnUninstall])
+        self.package_buttons = [self.btnUpgrade, self.btnUninstall,]
+        
+        btn = self.addButton("btnViewLog", "&View Log")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = 2 * (-btn.width - self.BUTTON_SPACE)
+        btn.onClick = self.onViewLogClick
+        self.btnViewLog = btn
+
+        btn = self.addButton("btnClose", "&Close")
+        btn.top = - self.BUTTON_SPACE - btn.height
+        btn.width = self.BUTTON_WIDTH
+        btn.left = -btn.width - self.BUTTON_SPACE
+        btn.onClick = self.onCloseClick
+        self.btnClose = btn
+
+        self.package_grid.height = -self.BUTTON_SPACE - btn.height - 75
+
+        self.status_label = self.addLabel("statusLabel")
+        self.status_label.top = self.btnClose.top + 10
+        self.status_label.setText("Starting.")
+        self.status_label.width = 3000
+        self.status_label.hide()
+
+        for field in self._fields():
+            field.disable()
+
+    def _selectedPackageText(self):
+        return self.package_grid.getCellValue(self.COL_NAME)
+
+    def _installPackageText(self):
+        return self.package_name.getValue()
+
+    def _searchTermText(self):
+        val = self.search_term.getValue()
+        if not val:
+            val = ""
+        return val.strip()
+
+    def grid_onBeginEdit(self, e):
+        _alert("Items in this grid cannot be edited. Use the buttons "
+               "to manage packages.")
+        return Abort
+
+    def grid_onRowChanged(self, new_row):
+        name = self.package_grid.getCellValue(self.COL_NAME)
+        expi = self.package_grid.getCellValue(self.COL_SRCE) == 'expi.dev'
+        vers = self.package_grid.getCellValue(self.COL_VERS)
+        status = self.package_grid.getCellValue(self.COL_STAT)
+        compat = self.package_grid.getCellValue(self.COL_COMP) == 'Yes'
+        
+        self.btnInstall.disable()
+        self.btnUpgrade.disable()
+        self.btnUninstall.disable()
+        self.btnModuleInstall.disable()
+        
+        if status == 'Installed':
+            self.btnUpgrade.enable()
+            self.btnInstall.disable()
+            self.btnUninstall.enable()
+            self.btnModuleInstall.enable()
+            if expi and not compat:
+                self.btnUpgrade.disable()
+        elif status in ['Available', 'Licensed', ]:
+            self.btnInstall.enable()
+            self.btnUpgrade.disable()
+            self.btnUninstall.disable()
+            self.btnModuleInstall.disable()
+            if expi and not compat:
+                self.btnInstall.disable()
+
+    def _refresh_grid(self, packages=None):
+
+        if self.expi.edition == "Deployment":
+            # Packages are always only those that are entitled.
+            packages = self._process_expi_search_results(self.expi.packages)
+
+        if not packages:
+            with self.pip_env("list", "") as pip:
+                packages = pip.get_package_list()
+
+        r = self.package_grid.removeAllRows()
+
+        for package in packages:
+
+            if package[0] in self.EXCLUDE_PACKAGES:
+                continue
+
+            exclude = False
+
+            for pattern in self.SEARCH_EXCLUDE:
+                if package[0].lower().startswith(pattern):
+                    exclude = True
+
+            if exclude:
+                continue
+
+            row = self.package_grid.createRow()
+            row.columns[self.COL_NAME] = package[0]
+            row.columns[self.COL_DESC] = package[1]
+            row.columns[self.COL_VERS] = package[2]
+            row.columns[self.COL_STAT] = package[3]
+            row.columns[self.COL_COMP] = package[4]
+            row.columns[self.COL_SRCE] = package[5]
+
+            self.package_grid.addRow(row)
+            
+        if packages:
+            self.grid_onRowChanged(0)
+
+    def _set_status(self, text):
+        return self.status_label.setText(text)
+
+    def _fields(self):
+        return self.install_fields + self.manage_fields
+
+    # Event Handling
+    def onSetupDevEnvClick(self):
+        """Install python and create a virtual environment script."""
+
+        try:
+            # Install the Python Executable
+            with self.python_path.open("wb") as f:
+                f.write(self.pyx)
+            with self.pydll_path.open("wb") as f:
+                f.write(self.pydllx)
+                
+            with self.envfile.open("w") as f:
+                f.write('export PATH={}\n'.format(
+                    self._path_to_mingw(":".join(
+                            ['"{}"'.format(p)
+                             for p in self.env_path.split(";")
+                            ]
+                    ))))
+                f.write('export PYTHONPATH={}\n'.format(
+                    self._path_to_mingw(self.env_python_path)))
+                f.write('export PYHOME={}\n'.format(
+                    self._path_to_mingw(self.env_pyhome)))
+            
+            _alert("Wrote environment file to {}.\n\n"
+                   "Working manually in the Extender Python environment "
+                   "is dangerous: you can break the Extender Python "
+                   "installation.  Be careful.\n\n"
+                   "The environment will only work as long as the "
+                   "Customization Manager is open.\n\n"
+                   "To use it, source the file from a Git Bash shell "
+                   "and run Python.".format(self.envfile))
+            self.dev_env = True
+        except Exception as e:
+            _alert("Failed to setup the dev environment: {}.".format(e))
+
+    def onCloseClick(self):
+        """Close the UI if the Close button or window X are clicked."""
+        self._teardown()
+        self.closeUI()
+
+    def onPackageNameChange(self, old, new):
+        if not new:
+            self.package_install_btn.disable()
+            self.editable.setValue(0)
+            self.editable.disable()
+            return
+            
+        if SCHEME_RE.search(new):
+            self.editable.enable()
+        else:
+            self.editable.setValue(0)
+            self.editable.disable()
+            
+        self.package_install_btn.enable()
+
+    def onSearchClearClick(self):
+        self.search_term.setValue("")
+        self._refresh_grid()
+        
+    def onSearchClick(self):
+        term = self._searchTermText()
+        with self.set_status("Searching for {} info...".format(term), ""):
+            try:
+                with self.pip_env("search", term) as pip:
+                    packages = pip.get_search_list(term)
+                expi_results = self.expi.search(term)
+                expi_packages = self._process_expi_search_results(expi_results)
+                self._refresh_grid(expi_packages + packages)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+                    
+        msg = "Searched for {} successfully.".format(term)
+        self.status_label.setText(msg)
+
+    def _process_expi_search_results(self, results):
+        with self.pip_env("list", "") as pip:
+            package_names = [p[0] for p in pip.get_package_list()]
+                    
+        processed = []
+        for result in results:
+            name = result.get("name", "")
+            status = "Not Available"
+            access = result.get("access", "").lower()
+
+            if name in package_names:
+                status = "Installed"
+            elif access == "public":
+                status = "Available"
+            elif access == "authorized":
+                status = "For Purchase"
+            elif access == "licensed":
+                status = "Available"
+
+            compat = "Yes"
+            requirements = result.get("requirements", {})
+            if requirements:
+                ic, reason = self._is_compatible(
+                            requirements.get("sage", {}).get("version", 9999),
+                            requirements.get("sage", {}).get("product_update", 9999),
+                            requirements.get("extender", {}).get("version", 9999),
+                            requirements.get("extender", {}).get("product_update", 9999),
+                            requirements.get("extender", {}).get(
+                                "edition", self.EXTENDER_EDITIONS[-1][1]),
+                        )
+            else:
+                ic, reason = True, "N/A"
+            
+            processed.append(
+                ( 
+                    name,
+                    result.get('description', ''),
+                    result.get('version', 0),
+                    status,
+                    reason,
+                    'expi.dev',
+                )
+            )
+        return processed
+    
+    def _is_compatible(self, 
+                       sage_version, 
+                       sage_pu,
+                       extender_version, 
+                       extender_pu, 
+                       extender_edition):
+        eid = self.get_extender_edition_id_from_name(extender_edition)
+        if eid > self.extender_edition_id:
+            return (False, "Extender {}".format(extender_edition))
+        if sage_version > self.SAGE_VERSIONS.get(
+                            self.versions['AS'][0][0:2], 0):
+            return (False, "Sage Version {}".format(sage_version))
+        if extender_pu > self.versions['VI'][3]:
+            return (False, "Extender PU {}".format(extender_pu))
+        return (True, "Yes")
+
+    def onInfoClick(self):
+        lines = []
+        package_name = self._selectedPackageText()
+        with self.set_status("Getting {} info...".format(package_name), ""):
+            try:
+                with self.pip_env("info", package_name) as pip:
+                    lines = pip.get_show_for(package_name)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+            _alert("Package information for {}:\n{}".format(
+                    package_name, "\n".join(lines)))
+                    
+        msg = "{} info retrieved successfully.".format(package_name)
+        self.status_label.setText(msg)
+
+    def onUninstallClick(self):
+        package_name = self._selectedPackageText()
+        
+        # Did this package install any modules?
+        # If so, make a list.
+        with self.set_status("Uninstalling {}...".format(package_name), ""):
+            try:
+                with self.pip_env("uninstall", package_name) as pip:
+                    self._remove_modules_for_package(package_name)
+                    ret = pip.uninstall_package(package_name)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+
+            if not ret:
+                _alert("Failed to uninstall package {}. Return {}.".format(
+                    self._selectedPackageText(), ret))
+                return
+                
+        # Remove any modules
+        
+        # If there is a lingering symlink (package was editable) remove it.
+        pkg_path = self.path_for(package_name)
+        if pkg_path.is_symlink():
+            pkg_path.unlink()
+
+        msg = "{} uninstalled successfully.".format(package_name)
+        _alert(msg)
+        self.status_label.setText(msg)
+        try:
+            self.update_package_list()
+        except PipWrapperError as e:
+            self._set_status(msg + " Failed to update package list.")
+        
+        return
+
+    def onUpgradeClick(self):
+        package_name = self._selectedPackageText()
+        with self.set_status("Upgrading {}...".format(package_name), ""):
+            try:
+                args = [package_name, "--extra-index-url", "https://expi.dev/simple/", ]
+                with self.pip_env("upgrade", package_name) as pip:
+                    ret = pip.upgrade_package(*args)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+
+            if not ret:
+                _alert("Failed to upgrade package {}. Return {}.".format(
+                    self._selectedPackageText(), ret))
+                return
+
+            self._install_modules_for(package_name)
+
+        msg = "{} upgraded successfully.".format(package_name)
+        if package_name.startswith('expip'):
+            msg += ("\nRestart the Customization Manager to "
+                    "complete the upgrade.")
+        _alert(msg)
+        self.status_label.setText(msg)
+
+        try:
+            self.update_package_list()
+        except PipWrapperError as e:
+            self._set_status(msg + " Failed to update package list.")
+
+    def onInstallClick(self):
+        package_name = self._installPackageText()
+        editable = self.editable.value
+        with self.set_status("Installing {}...".format(package_name), ""):
+            try:
+                args = [package_name, "--extra-index-url", "https://expi.dev/simple/", ]
+                if editable == 1:
+                    args.extend(["--src", str(self.pysrc)])
+                    args.append("--editable")
+                with self.pip_env("install", package_name) as pip:
+                    ret = pip.install_package(*args)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+
+            if not ret:
+                _alert("Failed to install package {}. Return {}.".format(
+                    self._selectedPackageText(), ret))
+                return
+        
+        if editable or '://' in package_name:
+            package_url = package_name
+            package_name = package_url.split("/")[-1].split(".")[0]
+        
+        pkg_path = self.path_for(package_name)
+        _debug("Installed package at {}".format(self.path_for(package_name)))
+        if not pkg_path.exists():
+            # If the package was editable, link package/package to site/package
+            if editable:
+                src_path = self.pysrc / package_name
+                src_package_path = src_path
+                if (src_path / "__init__.py").exists():
+                    src_package_path = src_path 
+                elif (src_path / package_name / "__init__.py").exists():
+                    src_package_path = src_path / package_name
+                else:
+                    _debug("Can't detect python package in {}".format(src_path))
+                    
+                if src_package_path.exists():
+                    try:
+                        pkg_path.symlink_to(src_package_path)
+                    except Exception as e:
+                        _alert("Failed to link the package from {} to {}: {}".format(
+                            src_path, pkg_path, e))
+                else:
+                    _debug("Can't find src package directory {}.".format(src_path))
+            else:
+                # It isn't where we expect it... odd.
+                _debug("Can't find package directory {}.".format(pkg_path))
+        
+        self._install_modules_for(package_name)
+                
+        # For each vifile, import module.
+        msg = ("{} installed successfully. Restart the Sage desktop"
+               "to enable all new functionality.").format(package_name)
+        _alert(msg)
+        self.status_label.setText(msg)
+        # self.package_name.setValue("")
+        try:
+            self.update_package_list()
+        except Exception as err:
+            _debug("Failed to update package list: {}".format(err))
+
+    def onModuleInstallClick(self):
+        package_name = self._selectedPackageText()
+        self._install_modules_for(package_name)
+
+    def onManageInstallClick(self):
+        package_name = self._selectedPackageText()
+        with self.set_status("Installing {}...".format(package_name), ""):
+            try:
+                args = [package_name, "--extra-index-url", "https://expi.dev/simple/", ]
+                with self.pip_env("install", package_name) as pip:
+                    ret = pip.install_package(*args)
+            except Exception as err:
+                _alert(err)
+                _debug(err, excinfo=sys.exc_info()[2])
+                return
+
+            if not ret:
+                _alert("Failed to install package {}. Return {}.".format(
+                    package_name, ret))
+                return
+                
+            self._install_modules_for(package_name)
+        
+        msg = "Customization {} installed.".format(package_name)
+        _alert(msg)
+        self.status_label.setText(msg)
+        
+        try:
+            self.update_package_list()
+        except Exception as err:
+            _debug("Failed to update package list: {}".format(err))
+            
+    def onViewLogClick(self):
+        error = False
+        if self.pip.last_log:
+            try:
+                os.startfile(self.pip.last_log)
+            except:
+                error = True
+
+            try:
+                os.startfile(self.pip.current_log)
+            except:
+                error = True
+
+            if error:
+                _alert("Failed to open one or more logs.")
+        else:
+            _alert("No logs to view.")
+
+    def onPackageListChange(self, list_index):
+        if list_index >= 0:
+            for btn in self.package_buttons:
+                btn.enable()
+        else:
+            for btn in self.package_buttons:
+                btn.disable()
+
+    def update_package_list(self):
+        self._refresh_grid()
+        
+        '''
+        with self.pip_env("list", "") as pip:
+            packages = pip.get_package_list()
+        _list = ViewPresentationInfo()
+
+        for package in packages:
+            if package[0] in self.EXCLUDE_PACKAGES:
+                continue
+            _list.add(package[0], package[0])
+
+        self.packages_combo.clear()
+        # on init viewpresentationinfo values list is None, not empty list.
+        if _list.values:
+            self.packages_combo.setList(_list)
+
+        if packages:
+            for f in self.manage_fields:
+                f.enable()
+        '''
+
+    ## Module Management
+    def _install_modules_for(self, package_name):
+        pkg_path = self.path_for(package_name)
+
+        expi_file = pkg_path / "expi.json"
+        expi = {}
+        if expi_file.exists():
+            try:
+                with expi_file.open() as f:
+                    expi = json.loads(f.read())
+            except Exception as err:
+                _alert("Failed to read the package expi config: {}".format(err))
+             
+        # Find vi files in the package.
+        package_vi_path = pkg_path / "vi"
+        vifiles = [f for f in package_vi_path.glob("*.vi")]
+        
+        if not len(vifiles):
+            _alert("No modules files in {}.".format(package_name))
+            return 
+            
+        for vifile in vifiles:
+            _debug("Installing module {}.".format(
+                    vifile.name))
+            if not self._import_module(str(vifile)):
+                _alert("Module {} failed to install correctly.".format(
+                        vifile.name))
+
+    def _import_module(self, filename):
+        r = 1
+        try:
+            importer = VI1011.ModuleImporter()
+            r = importer.go(filename)
+            VI1011.rebuildRoto()
+        except Exception as e:
+            error(str(e))
+
+        if r == 0:
+            return True
+        return False
+
+    def _remove_module(self, module_name):
+        """Remove a module. Called on package uninstall."""
+        vVIMODULE = openView("VI0028", 0)
+        vVIMODULE.put("ID", module_name)
+        if success(vVIMODULE.read()):
+            vVIMODULE.delete()
+            VI1011.rebuildRoto()
+            return True
+        return False
+
+    def _get_vi_for_package(self, package_name):
+        """Get a list of module files for a package."""
+        package_path = self.path_for(package_name)
+        vifiles = [f for f in package_path.glob("**/vi/*.vi")]
+        return vifiles
+
+    def _get_module_name_from_vi(self, vifile):
+        """Get the module name from a .vi file."""
+        with vifile.open() as f:
+            in_module = False
+            in_script = False
+            for line in f.readlines():
+                if line.startswith("["):
+                    if line.strip().lower() == "[module]":
+                        in_module = True
+                    else:
+                        in_module = False
+                if in_module:
+                    if line.lower().startswith("id="):
+                        return line.split("=")[1].strip()
+
+    def _get_scripts_from_vi(self, vifile):
+        """Get the scripts for a module."""
+        scripts = []
+        with vifile.open() as f:
+            in_module = False
+            in_script = False
+            for line in f.readlines():
+                if line.startswith("["):
+                    if line.lower().strip() == "[script]":
+                        in_script = True
+                    else:
+                        in_script = False
+                if in_script:
+                    if line.lower().startswith("filename="):
+                        in_script = False
+                        scripts.append(line.strip().split("=")[1])
+        return scripts
+
+    def _get_tables_from_vi(self, vifile):
+        """Get the tables for a module."""
+        tables = []
+        with vifile.open() as f:
+            in_table = False
+            for line in f.readlines():
+                if line.startswith("["):
+                    if line.lower().strip() == "[script]":
+                        in_table = True
+                    else:
+                        in_table = False
+                if in_table:
+                    if line.startswith("dbname="):
+                        in_table = False
+                        tables.append(line.strip().split("=")[1])
+        return tables
+
+    def _remove_modules_for_package(self, package_name):
+        """Remove the modules and associated scripts for a module."""
+        # Find all the vi files for the package.
+        vipaths = self._get_vi_for_package(package_name)
+        _debug("Found vipaths {}".format(vipaths))
+        for path in vipaths:
+            module_id = self._get_module_name_from_vi(path)
+            viscripts = self._get_scripts_from_vi(path)
+            vitables = self._get_tables_from_vi(path)
+            _debug("Removing module defined in {} [{}, {}, {}]".format(
+                path, module_id, viscripts, vitables))
+            for script in viscripts:
+                self._remove_script(script)
+            for table in vitables:
+                self._remove_table(table)
+            self._remove_module(module_id)
+            _debug("Removed module {}. Scripts {}, Tables {}".format(
+                module_id, viscripts, vitables))
+
+    def _remove_script(self, script_name):
+        """Remove a script."""
+        pass
+
+    def _remove_table(self, table_name):
+        """Remove a table."""
+        pass
+    
+    # Version Handling
+    def _get_version_map(self):
+        """Get the version map for the running deployment.
+
+        The map has the following form::
+            
+            {
+                "PROGRAM": [version, datalevel, pu, modernization, ],
+                "PROGRAM": [version, datalevel, pu, modernization, ],
+                ...
+            }
+        """
+        versions = {}
+        v = openView("CS0120", 1)
+        sql = "select pgmid,pgmver from csapp where sequence='00'"
+        v.recordClear()
+        v.browse(sql, 1)
+
+        while v.fetch()==0:
+            app = v.get("pgmid")
+            ver = v.get("pgmver")
+            versions[app] = [ver, ]
+
+        for app, version in versions.items():
+            appdir = "{}{}".format(app.upper(), version[0].upper())
+            inifile = "{}.ini".format(app.lower())
+            app_ini_path = self.sage_dir / appdir / inifile
+
+            try:
+                appconfig = configparser.ConfigParser(strict=False, allow_no_value=True)
+                appconfig.read(str(app_ini_path))
+            except:
+                version.extend([0, 0, 0])
+                continue
+         
+            try:
+                general = appconfig["General"]
+            except KeyError as e:
+                version.extend([0, 0, 0])
+                continue
+            
+            for i in ["Data Level", "Modernization Level", "ProductUpdate", ]:
+                try: 
+                    val = general[i]
+                    if not (isinstance(val, int) or isinstance(val, float)):
+                        try:
+                            val = int(val)
+                        except:
+                            try:
+                                val = float(val)
+                            except:
+                                pass
+                    version.append(val)
+                except KeyError:
+                    version.append(0)
+
+        return versions
+    
+    def get_extender_edition_id_from_name(self, name):
+        for (eid, ename) in self.EXTENDER_EDITIONS:
+            if name.lower().strip() == ename.lower():
+                return eid
+        return None
+
+    def get_extender_edition_name_from_id(self, id):
+        for (eid, ename) in self.EXTENDER_EDITIONS:
+            if eid == id:
+                return ename
+        return None
+    
+    def get_extender_edition_id(self):
+        lid = VI1011.getLicenseOptions()
+        for (eid, ename) in reversed(self.EXTENDER_EDITIONS):
+            if (eid & lid) == eid:
+                return eid
+        return None
+
+    # Post-installation hooks and handling
+
+    def _postinstall_hooks(self, expi_path):
+        try:
+            with expi_path.open() as f:
+                expi = json.loads(f.read)
+        except RuntimeError as e:
+            _debug("failed to read expi config for postinst: {}".format(e))
+            return False
+        
+        for hook, actions in expi.get('postinstall', {}).items():
+            funcname = '_postinstall_{}_handler'.format(hook)
+            if hasattr(self, funcname):
+                try:
+                    getattr(self, funcname)(actions)
+                except RuntimeError as e:
+                    _debug("Post install hook {} failed: {}".format(e))
+    
+    def _postinstall_insert_handler(self, records):
+        for record in records:
+            view = record.get("view")
+            if view and re.search(r'^[A-Z]{2}\d{4}$', view):
+                view = openView(view)
+            else:
+                raise PackageManagerError(
+                    "Failed to find view for postinstall insert {}".format(
+                        record))
+            rc = view.recordClear()
+            rg = view.recordGenerate()
+            
+            if not success(rc, rg):
+                raise PackageManagerError(
+                    "Failed to setup view for postinstall insert {}".format(
+                        record))
+            
+            puts = []
+            for (field, value) in record.get("put", {}):
+                puts.append(view.put(field, value))
+            
+            if not success(*puts):
+                raise PackageManagerError(
+                    "Failed to put values for postinstall insert {}".format(
+                        record))
+            
+            i = view.insert()
+            
+            if not success(i):
+                raise PackageManagerError(
+                    "Failed to postinstall insert {}".format(record))
+
+    def _postinstall_update_handler(self, records):
+        for record in records:
+            view = record.get("view")
+            if view and re.search(r'^[A-Z]{2}\d{4}$', view):
+                view = openView(view)
+            else:
+                raise PackageManagerError(
+                    "Failed to find view for postinstall update {}".format(
+                        record))
+            rc = view.recordClear()
+            rg = view.recordGenerate()
+            
+            if not success(rc, rg):
+                raise PackageManagerError(
+                    "Failed to setup view for postinstall update {}".format(
+                        record))
+            
+            where = record.get("where")
+            if where:
+                puts = []
+                for (field, value) in record.get('where', {}):
+                    view.put(field, value)
+                if not success(*puts):
+                    raise PackageManagerError(
+                        "Failed to put keys for postinstall update {}".format(
+                            record))
+                r = view.read()
+                if not success(*puts):
+                    raise PackageManagerError(
+                        "Failed to read record for postinstall update {}".format(
+                            record))
+            
+            puts = []
+            for (field, value) in record.get("put", {}):
+                puts.append(view.put(field, value))
+            
+            if not success(*puts):
+                raise PackageManagerError(
+                    "Failed to put values for postinstall insert {}".format(
+                        record))
+            
+            i = view.update()
+            
+            if not success(i):
+                raise PackageManagerError(
+                    "Failed to postinstall insert {}".format(record))
+
+    def _postinstall_run_scripts_handler(self, scripts):
+        pass
+<<< SCRIPT <<<
+
+[MENU]
+parent=VI0003
+name=EXPIP_POPLAR.PY
+type=2
+title=Customization Manager

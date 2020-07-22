@@ -1,4 +1,15 @@
-theme: minima
+title: Poplar Development
+author:
+    name: Poplar Development
+    email: chris@poplars.dev
+description: Quality customizations built for Sage 300 using Orchid Extender.
 
-minima:
-    skin: solarized
+show_excerpts: false 
+
+theme: jekyll-theme-minimal
+logo: assets/img/poplar_gray.png
+
+collections:
+    opensource:
+        output: true
+        sort_by: order

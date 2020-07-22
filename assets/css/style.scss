@@ -1,0 +1,64 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+$header-font: 'Montserrat';
+$content-font: 'Lato';
+
+body {
+    font-family: $content-font !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $header-font !important;
+    font-weight: 500;
+}
+
+/* minimal theme native li */
+
+.downloads {
+    width: 89px;
+    float: left;
+    border-right: 1px solid #e0e0e0;
+    height: 40px;
+}
+
+header ul.downloads {
+    list-style: none;
+    height: 40px;
+    padding: 0;
+    background: #f4f4f4;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    width: 270px;
+}
+
+.nav {
+    list-style: none;
+    height: auto;
+    padding: 0;
+    background: #fff;
+    border: None
+}
+
+.nav-link {
+    width: auto;
+    float: none;
+    border: none;
+    height: auto;
+    padding-left: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-link-last {
+    border-bottom: none;
+}
+
+.logo {
+    padding-bottom: 1em;
+}
+
+iframe {
+    padding-bottom: 1em;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% seo %}
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        
+        {% if site.logo %}
+          <a href="{{ "/" | absolute_url }}">
+            <img src="{{site.logo | relative_url}}" class="logo" alt="Poplar Development" />
+          </a>
+        {% else %}
+          <h1><a href="{{ "/" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+        {% endif %}
+
+        <p>{{ site.description | default: site.github.project_tagline }}</p>
+
+        <ul class="nav">
+            <li class='nav-link'>
+                <a href='/customizations.html'>Customization Manager</a>
+            </li>
+            <li class='nav-link'>
+                <a href='remote-action.html'>Remote Actions</a>
+            </li>
+            <li class='nav-link'>
+                <a href='/development.html'>Custom Development</a>
+            </li>
+            <li class='nav-link nav-link-last'>
+                <a href="/opensource.html">Opensource Projects</a>
+            </li>
+        </ul>
+
+        <a href="mailto:chris@poplars.dev">Contact Us</a>
+
+      </header>
+      <section>
+
+      {{ content }}
+
+      </section>
+      <footer>
+          <p class='divisionof'>
+            <small>A division of 
+                   2665093 Ontario Inc.</small>
+          </p>
+      </footer>
+    </div>
+    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
+    {% if site.google_analytics %}
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', '{{ site.google_analytics }}', 'auto');
+      ga('send', 'pageview');
+    </script>
+    {% endif %}
+  </body>
+</html>
+
