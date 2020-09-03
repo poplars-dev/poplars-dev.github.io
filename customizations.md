@@ -17,7 +17,7 @@ This enables the development of robust customizations with a huge range
 of capabilities!
 
 <p class="view">
-    <a href="assets/customization-manager/EXPIP.poplar.vi" download>
+    <a href="https://bb.githack.com/cbinckly/expip/raw/master/expip/vi/EXPIP.poplar.vi" download>
         Customization Manager Download <small>EXPIP.poplar.vi</small></a>
 </p>
 
