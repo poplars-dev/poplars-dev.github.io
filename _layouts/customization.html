@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+{% seo %}
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+          {% include header.html %}
+      </header>
+      <section>
+
+    <h2>{{ page.name }}</h2>
+
+    <p class="view">
+        {% if page.presentation %}
+            <a href="{{ page.presentation }}">
+                Presentation</a>
+        {% endif %}
+        {% if page.docs_url %}
+            | <a href="{{ page.docs_url }}">
+                Docs</a>
+        {% endif %}
+    </p>
+
+      {{ content }}
+
+      </section>
+      <footer>
+          {% include footer.html %}
+      </footer>
+    </div>
+    {% include footer_scripts.html %}
+  </body>
+</html>
+
