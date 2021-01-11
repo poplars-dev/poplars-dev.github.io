@@ -1,0 +1,19 @@
+---
+layout: null
+---
+[
+  {% for customization in site.customizations %}
+
+    {
+      "name": "{{ customization.name | xml_escape }}",
+      "content"	 : "{{customization.content | strip_html | strip_newlines | remove:  "	" | escape | remove: "\"}}",
+      "slug": "{{ customization.name | slugify }}",
+      "url": "{{ customization.url | xml_escape }}",
+      "apps": "{% for app in customization.apps %}{{ app }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+      "views": "{% for view in customization.views %}{{ view }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+      "screens": "{% for screen in customization.screens %}{{ screen }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+      "integrations": "{% for integration in customization.integrations %}{{ integration }}{% unless forloop.last %}, {% endunless %}{% endfor %}"
+    }
+    {% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]
