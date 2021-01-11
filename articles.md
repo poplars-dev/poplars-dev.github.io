@@ -5,9 +5,13 @@ title: Articles
 
 ## Articles
 
-<ul class="articles-list">
+<div class="post-list">
 {% for post in site.posts %}
-    <li class="article-item"><a href="{{ post.url }}">{{ post.title }}</a></li>
+    <div class="view">
+        <h3><a href="{{ post.url }}">{{ post.title }}
+        <small>{{ post.date }}</small></a></h3>
+        {{ post.excerpt }}
+    </div>
 {% endfor %}
-</ul>
+</div>
 

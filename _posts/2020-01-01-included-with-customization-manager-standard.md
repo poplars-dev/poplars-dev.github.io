@@ -9,6 +9,7 @@ permalink: /articles/included-with-customization-manager-standard.html
 Some of the customizations in our [catalogue](/catalogue.html) are
 included with the purchase of the Standard Edition of Customization
 Manager.  There is no additional cost to use them.
+<!--more-->
 
 [Tailored customizations](/articles/packaged-vs-tailored.html) may
 require additional development and testing time to be adjusted to fit

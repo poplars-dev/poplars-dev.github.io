@@ -12,11 +12,10 @@ of production.  Representative includes the same versions, data, settings,
 and processes.
 
 However, your production environment is guaranteed to be different from all
-others!  Before installing a customization in production it is imperative that
-it be tested in a representive environment first. Plan time to install and
-thoroughly test your production processes and configuration with the
-customization to make sure it behaves as expected.
-<!--more-->
+others! <!--more--> Before installing a customization in production it is
+imperative that it be tested in a representive environment first. Plan time to
+install and thoroughly test your production processes and configuration with
+the customization to make sure it behaves as expected.
 
 Pay particular attention to areas where your processes or data may vary
 from the Sage Best practices.

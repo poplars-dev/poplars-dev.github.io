@@ -12,12 +12,11 @@ perspective they are a one off project.  The result tends towards a low
 quality customization that meets the minimum bar only; inflexible and hard
 to maintain.
 
-We are focused on delivering [quality](/quality.html) customizations for Sage
-300. A high quality customization is built as much on possible on existing,
+We are focused on delivering [quality](/quality.html) customizations for 
+Sage 300. <!--more--> A high quality customization is built as much on possible on existing,
 well tested code - quality customizations have as little custom code as
 possible!  In fact, the best customizations contain custom code only to express
 the specific business process they automate.  
-<!--more-->
 
 Building a customization requires much more than just expressing the 
 customer's business logic. Data needs to be managed, events dispatched, errors

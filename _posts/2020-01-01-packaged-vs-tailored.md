@@ -8,6 +8,7 @@ permalink: /articles/packaged-vs-tailored.html
 
 While browsing the [catalogue](/catalogue.html), you'll see
 that customizations are either **packaged** or **tailored**.
+<!--more-->
 
 **Packaged** customizations are relatively independent of specific
 business processes and provide useful functionality out of the box.
