@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: IC Transfer Security
+name: I/C Transfer Security
 package_name: poplar_ictrsec
 excerpt_separator: <!--more-->
 format: packaged
