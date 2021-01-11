@@ -1,8 +1,6 @@
 title: Poplar Development
-author:
-    name: Poplar Development
-    email: chris@poplars.dev
-description: Quality customizations built for Sage 300 using Orchid Extender.
+author: Chris (chris at poplars.dev)
+description: Quality customizations to Sage 300 built using Orchid Extender.
 
 show_excerpts: false 
 
@@ -13,3 +11,7 @@ collections:
     opensource:
         output: true
         sort_by: order
+    customizations:
+        output: true
+        sort_by: order
+
