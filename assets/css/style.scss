@@ -1,6 +1,5 @@
 ---
 ---
-
 @import "{{ site.theme }}";
 
 $header-font: 'Montserrat';
@@ -57,10 +56,50 @@ header ul.downloads {
     border-bottom: none;
 }
 
+.articles-list{
+    list-style: none;
+}
+
 .logo {
     padding-bottom: 1em;
 }
 
 iframe {
     padding-bottom: 1em;
+}
+
+#search-form {
+    padding-bottom: 2em;
+}
+
+#search-results {
+    text-align: center;
+}
+
+#search-input {
+    width: 70%;
+}
+
+.customization-info h3 {
+    margin-bottom: 0.4em
+}
+
+.customization-info p {
+    margin-bottom: 0.4em
+}
+
+.customization-info {
+    margin-bottom: 2em;
+}
+
+video {
+    margin-bottom: 1.5em;
+}
+
+.input-group {
+    margin-bottom: 1.5em;
+}
+
+.input-group p {
+    margin-bottom: 0px;
 }
