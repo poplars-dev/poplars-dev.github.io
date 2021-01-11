@@ -1,0 +1,57 @@
+---
+layout: customization
+order: 5
+name: EFT File Create Permissions
+package_name: poplar_eftfileperms
+presentation: https://docs.google.com/presentation/d/1k3KQzSEsSxCJFW0xbp8iJG0kmg8w2WQWE55PzBttmn8/edit?usp=sharing
+sage:
+    apps:
+        - EL
+    views:
+        - EL0100
+    screens:
+excerpt_separator: <!--more-->
+format: packaged
+---
+
+Originally designed for a customer that must update foreign currency
+transaction rates immediately before posting EFT files from unposted batches,
+the EFT File Permissions Customization adds an additional layer of security by
+restricting which users can create files from Posted or Unposted Batches.
+<!--more-->
+
+## How does it work?
+
+The EFT File Permissions customization uses a custom table containing custom
+permissions that specify which users can create EFT files and whether they are
+allowed to create files from Posted or Unposted Batches.  
+
+Attempts to create files by unauthorized users result in an immediate error
+with helpful message.
+
+## Features
+
+EFT File Permissions:
+
+- restrict which users can create EFT Files;
+- restrict whether a user can create files from posted batches, unposted batches, or both;
+- user managed permissions through a custom table.
+
+## Pricing
+
+The EFT File Permissions customization is offered with either a perpetual or 
+subscription license.
+
+### Monthly Subscription Costs
+
+| Customization Manager Standard: $50
+| EFT File Permissions: $12.50
+
+Billed annually
+
+### Perpetual License Costs
+
+| Customization Manager Standard: $1287
+| EFT File Permissions: $321.75
+
+Requires 21% Annual Software Assurance (SA)
