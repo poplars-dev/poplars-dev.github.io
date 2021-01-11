@@ -29,7 +29,7 @@ are delivered predictably, of high quality, and with excellent value.
 
 Our custom development service builds on this experience by dilligently working
 through a process mitigates these risks and helps to deliver a 
-[quality result](/approach/quality). 
+[quality result](/quality.html). 
 All custom development engagements go through the following steps:
 
 1. Custom Development Request
