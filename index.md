@@ -15,7 +15,7 @@ the most flexible platform for the rapid development of Sage customizations.
 Coupled with [Customization Manager](/customizations.html), higher 
 [quality](/quality.html) customizations can be developed and distributed in
 less time.  Browse the [Customization Catalogue](/catalogue.html) to see 
-some of the customizations we have built.
+{{ site.customizations.size }} customizations we have built.
 
 In addition to customizations, we are responsible for the 
 [Remote Actions](/remote-actions.html) Module and Fleeting Forms, 
