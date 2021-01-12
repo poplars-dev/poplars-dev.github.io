@@ -15,12 +15,13 @@ stdin.on('end', function () {
 
   var idx = lunr(function () {
     this.ref('slug')
-    this.field('name')
+    this.field('name', { 'boost': 10})
     this.field('content')
     this.field('apps')
     this.field('views')
     this.field('screens')
     this.field('integrations')
+    this.field('format')
 
     documents.forEach(function (doc) {
       this.add(doc)
