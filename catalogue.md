@@ -19,7 +19,7 @@ Some information that may be relevant before you peruse the catalogue:
 Don't hesitate to 
 <a href="mailto:chris@poplars.dev?subject=Customization%20Catalogue%20Request">
 contact us</a> if you could use one of the customizations, need one tweaked for
-a specific use case, or have something complete new that needs building.
+a specific use case, or have something completely new that needs building.
 
 {% include search.html %}
 
