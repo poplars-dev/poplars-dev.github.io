@@ -9,7 +9,7 @@ title: Articles
 {% for post in site.posts %}
     <div class="view">
         <h3><a href="{{ post.url }}">{{ post.title }}
-        <small>{{ post.date }}</small></a></h3>
+        <small>{{ post.date | date: "%Y-%m-%d" }}</small></a></h3>
         {{ post.excerpt }}
     </div>
 {% endfor %}
