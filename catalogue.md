@@ -34,7 +34,7 @@ a specific use case, or have something completely new that needs building.
                 tailored
                {% endif %}
                {% if customization.monthly_cost == 0 %}
-               - included with Customization Manager Standard
+               - included with Standard Edition
                 {% endif %}
         </small></a></h3>
         <div class="customization-excerpt">
