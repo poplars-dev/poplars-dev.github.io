@@ -3,7 +3,6 @@ layout: customization
 order: 5
 name: Ounce Taxes (Custom Taxes by Destination)
 package_name: poplar_ouncetaxes
-excerpt_separator: <!--more-->
 apps:
     - O/E
 views:
@@ -14,7 +13,10 @@ views:
     - OE0691
     - OE0692
 screens:
-format: bespoke
+format: tailored
+monthly_cost: 75
+perpetual_cost: 2145
+excerpt_separator: <!--more-->
 ---
 
 The Ounce Taxes customization automatically calculates and adds an
@@ -55,27 +57,4 @@ Ounce Taxes:
 - optionally calculate taxes based on a different Unit of Measure (UOM) than
   ordered.
 
-## Pricing
-
-The Ounce Tax customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Ounce Tax customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Ounce Tax: $75
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Ounce Tax: $2145
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

@@ -4,7 +4,16 @@ order: 5
 name: Tax Rebate at Source
 package_name: poplar_taxrebate
 excerpt_separator: <!--more-->
-format: bespoke
+apps:
+    - A/R
+    - G/L
+views:
+    - AR0032
+screens:
+    - AR1200
+format: tailored
+monthly_cost: 50
+perpetual_cost: 1395
 ---
 
 The Tax Rebate customization makes it easy to capture tax rebates
@@ -33,27 +42,4 @@ Tax Rebate at Source:
 - flexible account mappings, the G/L rebate account can vary by item or
   triggering tax account number.
 
-# Pricing
-
-The Tax Rebate at Source customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Tax Rebate at Source customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Tax Rebate at Source: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Tax Rebate at Source: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

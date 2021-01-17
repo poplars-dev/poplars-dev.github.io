@@ -3,8 +3,15 @@ layout: customization
 order: 5
 name: I/C Transfer Security
 package_name: poplar_ictrsec
-excerpt_separator: <!--more-->
+apps: 
+    - I/C
+views:
+    - IC0730
+screens:
 format: packaged
+monthly_cost: 50
+perpetual_cost: 1395
+excerpt_separator: <!--more-->
 ---
 The IC Transfer Security customization adds a custom table that maps
 Sage users to I/C Transfer roles.  I/C transfers to and from particular
@@ -39,21 +46,4 @@ IC Transfer Security:
 - role based permissions make applying permissions to more than one user simple;
 - automated enforcement of transfer policies.
 
-# Pricing
-
-The I/C Transfer Security customization is offered with either a perpetual
-or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| I/C Transfer Security: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| I/C Transfer Security: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

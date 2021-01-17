@@ -9,6 +9,8 @@ apps:
 views:
     - PO0620
     - PO0630
+monthly_cost: 100
+perpetual_cost: 2925
 format: packaged
 ---
 
@@ -38,22 +40,4 @@ P/O Optional Field Copy:
 - keep fields consistent between header and detail line;
 - eliminate the need to update optional fields on all lines by hand.
 
-## Pricing
-
-The P/O Optional Field Copy customization is offered with either a
-perpetual or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| P/O Optional Field Copy: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| P/O Optional Field Copy: $1180
-
-Requires 21% Annual Software Assurance (SA)
-
+{% include pricing.html %}

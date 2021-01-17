@@ -12,6 +12,8 @@ screens:
     - IC3310
     - IC3410
 format: packaged
+monthly_cost: 50
+perpetual_cost: 1395
 excerpt_separator: <!--more-->
 ---
 
@@ -50,21 +52,4 @@ Smart I/C Quanrantine Dates:
   transfer with the lot;
 - applies to both transfers and adjustments.
 
-# Pricing
-
-The Smart I/C Quarantine Dates customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Smart I/C Quarantine Dates: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Smart I/C Quarantine Dates: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

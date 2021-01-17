@@ -3,7 +3,6 @@ layout: customization
 order: 5
 name: I/C Long Vendor Descriptions
 package_name: poplar_icvendesc
-excerpt_separator: <!--more-->
 apps:
     - I/C
     - P/O
@@ -12,6 +11,9 @@ screens:
     - IC1120
     - PO1210
 format: packaged
+monthly_cost: 12.50
+perpetual_cost: 325
+excerpt_separator: <!--more-->
 ---
 
 The I/C Long Vendor Descriptions customization enables the use of
@@ -37,21 +39,4 @@ to map long descriptions to vendors items. It adds a new column to the
 I/C Vendor Items grid so the description can be managed in line with 
 all other vendor item details.
 
-## Pricing
-
-The Long Vendor Item Descriptions customization is offered with either a
-perpetual or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Long Vendor Item Descriptions: $12.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Long Vendor Item Descriptions: $321.75
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

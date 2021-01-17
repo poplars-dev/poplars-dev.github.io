@@ -9,8 +9,10 @@ views:
     - OE0520
 screens:
     - OE1100
-excerpt_separator: <!--more-->
 format: packaged
+monthly_cost: 37.50
+perpetual_cost: 858
+excerpt_separator: <!--more-->
 ---
 
 The Credit Card Charge customization monitors O/E Orders and Quotes and asks
@@ -56,21 +58,4 @@ Automatic Credit Card charges:
   changes;
 - optional user prompt if the charge need not be applied in all cases.
 
-## Pricing
-
-The Credit Card Charges customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Credit Card Charges: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Credit Card Charges: $858
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

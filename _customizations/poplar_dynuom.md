@@ -14,6 +14,8 @@ screens:
 integrations:
     - I/M
 format: packaged
+monthly_cost: 100
+perpetual_cost: 2925
 presentation: 
 demo: 
 docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_dynuom-1.0.10/docs/index.html
@@ -67,22 +69,4 @@ Dynamic Units of Measure:
   accompanying I/M Note;
 - log orders that are made with quantities that would require repacking.
 
-## Pricing
-
-The Dynamic Units of Measure customization is offered with either a perpetual
-or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Dynamic Units of Measure: $100
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Dynamic Units of Measure: $2925
-
-Requires 21% Annual Software Assurance (SA)
-
+{% include pricing.html %}

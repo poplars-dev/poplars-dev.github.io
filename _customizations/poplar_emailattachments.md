@@ -12,8 +12,10 @@ apps:
     - P/O
 views:
 screens:
-excerpt_separator: <!--more-->
 format: tailored
+monthly_cost: 37.50
+perpetual_cost: 858
+excerpt_separator: <!--more-->
 ---
 
 For cases in which one or more attachments must be added to an email,
@@ -57,27 +59,4 @@ Email Attachments:
 - supports compressing and combining many files in a single archive attachment;
 - logs successful and failed email send events to the database
 
-## Pricing
-
-The Email Attachments customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Email Attachments customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Email Attachments: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Email Attachments: $858
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

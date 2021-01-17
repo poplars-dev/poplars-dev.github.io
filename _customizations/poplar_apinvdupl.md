@@ -10,10 +10,12 @@ screens:
 apps:
     - A/P
 views:
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_apinvdupl-1.6.1/docs/index.html
-presentation: https://docs.google.com/presentation/d/1i7vD8uiVQheYOGpqWD9OxqYtNEuk7SwG71_I1hXmI4I/edit?usp=sharing
-excerpt_separator: <!--more-->
 format: packaged
+monthly_cost: 37.50
+perpetual_cost: 1180
+docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_apinvdupl-1.6.1/docs/index.html
+#presentation: https://docs.google.com/presentation/d/1i7vD8uiVQheYOGpqWD9OxqYtNEuk7SwG71_I1hXmI4I/edit?usp=sharing
+excerpt_separator: <!--more-->
 ---
 
 The A/P Invoice Duplicates customization integrates with Information
@@ -54,21 +56,4 @@ Instant identification of duplicate invoices:
 
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_arpricelist/drill_down.png" description="Double click an invoice to drill-down." %}
 
-## Pricing
-
-The AP Invoice Duplicates customization is available under a subscription
-or a perpetual license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| A/P Invoice Duplicates: $37.50
-
-Billed annually  
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| A/P Invoice Duplicates: $1180
-
-Both require 21% Annual Software Assurance
+{% include pricing.html %}

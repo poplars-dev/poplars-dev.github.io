@@ -13,9 +13,11 @@ apps:
 views:
     - AR0033
 monthly_cost: 0
+perpetual_cost: 0
 excerpt_separator: <!--more-->
 format: packaged
 ---
+
 The AR Price List module enables Sage users to maintain custom per Customer,
 per Item, pricing.  It can be used when Sage's price list functionality is not
 available.
@@ -68,22 +70,4 @@ when sold to customer `1200`.  When a new invoice is created for customer
   Your browser doesn't support the video tag.
 </video>
 
-## Pricing
-
-The A/R Price List customization is included with a Customization Manager 
-Standard license.  Customization Manager is offered either on a monthly 
-subscription or with a perpetual license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| A/R Price Lists: $0
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| A/R Price Lists: $0
-
-Plus 21% Annual Software Assurance
+{% include pricing.html %}

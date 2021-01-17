@@ -15,7 +15,8 @@ views:
     - AR0025
 screens:
 format: packaged
-presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing
+monthly_cost: 100
+#presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_addresses/poplar_addresses_demo.mp4
 docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_addresses-0.0.9/docs/index.html
 excerpt_separator: <!--more-->
@@ -97,18 +98,7 @@ The following corrections are demonstrated:
   Your browser doesn't support the video tag.
 </video>
 
-## Pricing
-
-The Address Validation customization requires regular maintenance as provider
-APIs evolve.  It is only available on subscription.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Address Validation: $100
-
-Billed annually  
-Plus any applicable provider API costs  
+{% include pricing.html %} 
 
 ### Example TCO Calculations
 
@@ -136,7 +126,7 @@ Canada Post Integration (CA):
 
 ### Return on Investment
 
-The potential ROI is large.  It depends on shipping frequency, destinations,
+The potential ROI depends on shipping frequency, destinations,
 and carriers.  
 
 Taking as an example UPS, the following fees may be applied to shipments with

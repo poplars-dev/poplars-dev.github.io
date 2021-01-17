@@ -16,6 +16,8 @@ views:
     - GL0010
 screens:
 format: packaged
+monthly_cost: 37.50
+perpetual_cost: 858
 presentation: 
 demo: 
 docs_url: 
@@ -54,22 +56,4 @@ are logged in the Extender Audit Log.
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_auditfield/log_entries.png" 
                       description="Both changes are logged." %}
 
-## Pricing
-
-The Audit Field Changes by User customization is available under a subscription
-or a perpetual license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Audit Field Changes by User: $37.50
-
-Billed annually  
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Audit Field Changes by User: $858
-
-Both require 21% Annual Software Assurance
-
+{% include pricing.html %}

@@ -9,7 +9,9 @@ apps:
     - G/L
 views:
     - AR0033
-format: bespoke
+format: tailored
+monthly_cost: 37.50
+perpertual_cost: 858
 ---
 
 The G/L override account dynamically changes the Item Revenue
@@ -29,27 +31,4 @@ Before an A/R invoice batch is posted, the customization updates the
 G/L account for all entries in the batch based on the item, location, and
 default G/L account.
 
-## Pricing
-
-The Override G/L Account customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Override G/L Account customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Override G/L Account: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Override G/L Account: $858
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

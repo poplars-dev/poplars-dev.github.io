@@ -16,6 +16,7 @@ views:
     - AR0024
     - AR0025
 monthly_cost: 0
+perpetual_cost: 0
 excerpt_separator: <!--more-->
 format: packaged
 ---
@@ -57,22 +58,4 @@ ISO Codes and Embargoes:
 - blocks addresses from embargoed countries;
 - can be applied to any object with address fields.
 
-## Pricing
-
-The Country Codes, State Codes, and Embargoes customization is included with a
-Customization Manager Standard license.  Customization Manager is offered
-either on a monthly subscription or with a perpetual license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Country Codes, State Codes, and Embargoes: $0
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Country Codes, State Codes, and Embargoes: $0
-
-Plus 21% Annual Software Assurance
+{% include pricing.html %}

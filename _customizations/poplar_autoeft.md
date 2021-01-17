@@ -4,16 +4,16 @@ order: 5
 name: Auto EFT File Create
 package_name: poplar_autoeft
 integrations:
-    - Process Scheduler
-format: custom
-presentation: https://docs.google.com/presentation/d/1-SggxKzPI2LeyENXgaW6ws4okfISKtgCBIMN_gCQpJo/edit?usp=sharing
-sage:
-    views:
-    screens:
-    apps:
-        - E/L
+    - P/S
+format: tailored
+monthly_cost: 75
+perpetual_cost: 2145
+#presentation: https://docs.google.com/presentation/d/1-SggxKzPI2LeyENXgaW6ws4okfISKtgCBIMN_gCQpJo/edit?usp=sharing
+views:
+screens:
+apps:
+    - E/L
 excerpt_separator: <!--more-->
-format: bespoke
 ---
 
 The Auto EFT File Create customizations automates the creation of EFT files,
@@ -56,27 +56,4 @@ Automate EFT Posting:
 - automatically send remittances to vendors for all successful entries;
 - in database logging of created entries, failed entries, and emails sent.
 
-## Pricing
-
-The Auto EFT File Create customization needs to be tailored to the customer
-environment.  In addition to the base costs, below, there is a one time 
-setup cost to tailor the customization for the environment.  If you'd like
-a free assessment and quote for the cost of tailoring, please 
-<a href="mailto:chris@poplars.dev">contact us</a>.
-
-The Auto EFT File Create customization is sold under both perpetual and
-subscription licensing.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Automate EFT Post: $75
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Automate EFT Post: $2145
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

@@ -11,6 +11,8 @@ views:
     - BK0460
 screens:
 format: packaged
+monthly_cost: 50
+perpetual_cost: 1395
 presentation: 
 demo: 
 docs_url: 
@@ -45,21 +47,4 @@ Detail Optional Fields:
   managed in line with the related object;
 - optional fields are transcribed to the G/L Entry optional fields.
 
-## Pricing
-
-The Detail Optional Fields customization is offered with either a perpetual
-or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Detail Optional Fields: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Detail Optional Fields: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

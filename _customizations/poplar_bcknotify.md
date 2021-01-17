@@ -10,6 +10,8 @@ views:
     - OE0692
 screens:
 format: packaged
+monthly_cost: 37.50
+perpetual_cost: 858
 presentation: 
 demo: 
 docs_url: 
@@ -28,21 +30,4 @@ checks each line in the order.  If any lines have quantity on backorder, an
 email notification is generated based on a user configurable template and
 emailed to the customer based on the A/R Customer delivery method.
 
-## Pricing
-
-The Customer Backorder Notification customization is sold under both perpetual
-and subscription licensing.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Customer Backorder Notification: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Customer Backorder Notification: $858
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

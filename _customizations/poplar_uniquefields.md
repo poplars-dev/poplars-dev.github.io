@@ -4,8 +4,9 @@ order: 1
 name: Unique Fields
 package_name: poplar_uniquefields
 monthly_cost: 0
+perpetual_cost: 0
 excerpt_separator: <!--more-->
-format: bespoke
+format: tailored
 ---
 
 Unique Fields is a simple customization that inserts a user defined
@@ -32,29 +33,4 @@ The Unique Fields customization can be connected to any view or field. When
 an object is inserted, custom logic is used to derive the next unique value
 in the sequence.
 
-
-## Pricing
-
-The Unique Fields customization needs to be tailored to the customer
-environment.  There is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The A/R Price List customization is included with a Customization Manager 
-Standard license.  Customization Manager is offered either on a monthly 
-subscription or with a perpetual license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Unique Fields: $0
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Unique Fields: $0
-
-Plus 21% Annual Software Assurance
+{% include pricing.html %}

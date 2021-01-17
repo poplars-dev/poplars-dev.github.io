@@ -14,6 +14,8 @@ screens:
     - OE1100
     - PO1210
 format: packaged
+monthly_cost: 50
+perpetual_cost: 1395
 ---
 
 The Enhanced P/O and O/E Comments customization enables the use of
@@ -59,21 +61,4 @@ Enhanced O/E and P/O comments:
 - no line length limitations;
 - built on Sage's comments, stored and included in reports in the same way.
 
-## Pricing
-
-The Enhanced O/E and P/O Comments customization is offered with either a
-perpetual or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Enhanced O/E and P/O Comments: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Enhanced O/E and P/O Comments: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

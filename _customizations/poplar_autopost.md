@@ -5,7 +5,9 @@ name: Auto-Post Batches with Description
 package_name: poplar_autopost
 integrations:
     - Process Scheduler
-presentation: https://docs.google.com/presentation/d/1fgZwV4kEC-b6SVi1EU-2XPv566jdK6Gkg7Er7i-El04/edit?usp=sharing
+#presentation: https://docs.google.com/presentation/d/1fgZwV4kEC-b6SVi1EU-2XPv566jdK6Gkg7Er7i-El04/edit?usp=sharing
+monthly_cost: 37.50
+perpetual_cost: 858
 sage:
     views:
         - AR0049
@@ -17,7 +19,7 @@ sage:
         - B/K
         - G/L
 excerpt_separator: <!--more-->
-format: bespoke
+format: tailored
 ---
 
 The Auto-Post Batches with Description customization is designed
@@ -60,27 +62,4 @@ Automate Batch Posting:
   handled;
 - pro-active notification of posting results over email.
 
-## Pricing
-
-The Auto Post Batches customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Auto Post Batches customization is sold under both perpetual and
-subscription licensing.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Automate Batch Post: $37.50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Automate Batch Post: $858
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

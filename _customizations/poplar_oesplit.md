@@ -4,14 +4,16 @@ order: 5
 name: O/E Order Split
 package_name: poplar_oesplit
 integrations:
-    - Information Manager Notes
+    - I/M
 apps:
     - O/E
 screens:
     - OE1100
 views: 
-excerpt_separator: <!--more-->
 format: packaged
+monthly_cost: 75
+presentation: 2145
+excerpt_separator: <!--more-->
 ---
 
 The O/E Order Split customization adds a button to the O/E Order Entry
@@ -55,21 +57,4 @@ O/E Order Splitting:
 - auditable history maintained in optional fields;
 - related orders are easily identified and opened using the accompanying I/M Note.
 
-## Pricing
-
-The Sales Order Splitting customization is offered with either a
-perpetual or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Sales Order Splitting: $75
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Sales Order Splitting: $2145
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

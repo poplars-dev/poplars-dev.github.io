@@ -10,9 +10,11 @@ views:
 screens:
     - OE1100
 format: packaged
-presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing
-demo: https://s3.amazonaws.com/dev.expi/content/poplar_addresses/poplar_addresses_demo.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_addresses-0.0.9/docs/index.html
+monthly_cost: 50
+perpetual_cost: 1395
+presentation: 
+demo: 
+docs_url: 
 excerpt_separator: <!--more-->
 ---
 
@@ -44,21 +46,4 @@ and the drill-down functionality in the grid.
   Your browser doesn't support the video tag.
 </video>
 
-## Pricing
-
-The Backorder Notification customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Backorder Notification: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Backorder Notification: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

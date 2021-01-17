@@ -10,6 +10,8 @@ views:
 screens:
     - OE1100
 format: packaged
+monthly_cost: 50
+perpetual_cost: 1395
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_delcharge/poplar_delcharge_demo_cut.mp4
 docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_delcharge-1.0.0/docs/index.html
@@ -60,21 +62,4 @@ The demo below demonstrates the setup and features of the customization, includi
   Your browser doesn't support the video tag.
 </video>
 
-## Pricing
-
-The Delivery Charges customization is offered with either a perpetual
-or subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Delivery Charges: $50
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Delivery Charges: $1395
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}

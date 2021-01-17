@@ -10,7 +10,9 @@ views:
 screens:
     - OE1100
 excerpt_separator: <!--more-->
-format: bespoke
+format: tailored
+montly_cost: 75
+perpetual_cost: 2145
 ---
 
 The Item Compliance customization stops users from 
@@ -49,27 +51,4 @@ Item Compliance:
 - user configurable through custom table and optional fields;
 - enforcement of compliance rules during order entry.
 
-## Pricing
-
-The Item Compliance customization needs to be tailored to the customer
-environment.  In addition to the base costs below, there is a one time 
-setup cost to create a version specific to the customer requirements.  If
-you'd like a free assessment and quote, please <a
-href="mailto:chris@poplars.dev">contact us</a>.
-
-The Item Compliance customization is offered with either a perpetual or 
-subscription license.
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| Item Compliance: $75
-
-Billed annually
-
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| Item Compliance: $2145
-
-Requires 21% Annual Software Assurance (SA)
+{% include pricing.html %}
