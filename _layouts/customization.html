@@ -11,7 +11,17 @@
       </header>
       <section>
 
-    <h2>{{ page.name }}</h2>
+          <h2>{{ page.name }}
+            <small>{{ page.package_name }} -
+                   {% if customization.format == "packaged" %}
+                    packaged
+                   {% else %}
+                    tailored
+                   {% endif %}
+                   {% if customization.monthly_cost == 0 %}
+                   - included with Customization Manager Standard
+                    {% endif %}
+            </small></h2>
 
     <p class="view">
         {% if page.presentation %}
