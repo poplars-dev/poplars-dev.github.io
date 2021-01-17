@@ -27,8 +27,7 @@ a specific use case, or have something completely new that needs building.
 {% for customization in site.customizations %}
     <div class='customization-info' id="{{ customization.name | slugify }}" data-order="{{ customization.order }}">
         <h3><a href="{{ customization.url }}">{{ customization.name }}
-        <small>{{ customization.package_name }} - 
-               {% if customization.format == "packaged" %}
+        <small>{% if customization.format == "packaged" %}
                 packaged
                {% else %}
                 tailored
