@@ -22,6 +22,7 @@ stdin.on('end', function () {
     this.field('screens')
     this.field('integrations')
     this.field('format')
+    this.field('package_name')
 
     documents.forEach(function (doc) {
       this.add(doc)
