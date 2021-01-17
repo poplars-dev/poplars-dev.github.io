@@ -6,20 +6,19 @@ package_name: poplar_autopost
 integrations:
     - Process Scheduler
 #presentation: https://docs.google.com/presentation/d/1fgZwV4kEC-b6SVi1EU-2XPv566jdK6Gkg7Er7i-El04/edit?usp=sharing
+views:
+    - AR0049
+    - AR0031
+    - BK0450
+apps:
+    - A/P
+    - A/R
+    - B/K
+    - G/L
+format: tailored
 monthly_cost: 37.50
 perpetual_cost: 858
-sage:
-    views:
-        - AR0049
-        - AR0031
-        - BK0450
-    apps:
-        - A/P
-        - A/R
-        - B/K
-        - G/L
 excerpt_separator: <!--more-->
-format: tailored
 ---
 
 The Auto-Post Batches with Description customization is designed
