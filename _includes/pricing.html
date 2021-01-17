@@ -2,17 +2,14 @@
 
 {% if page.format != "packaged" %}
 The {{ page.name }} customization must be tailored to fit the customer 
-environment. As a consequence, there is a one-time setup cost in addition 
-to the base cost for the customization, laid out below. For a free assessment
+environment. There is a one-time development cost in addition 
+to the base cost for the customization. For a free assessment
 and quote,  <a href="mailto:chris@poplars.dev">contact us</a>.  
 {% endif %}
 
 {% if page.monthly_cost == 0 %}
 The {{ page.name }} customization is included with a Customization Manager 
-Standard license.  
-
-Customization Manager Standard is offered either on a monthly 
-subscription or with a perpetual license.
+Standard license. 
 {% else %}
     {% if page.perpetual_cost %}
 The {{ page.name }} customization is offered either on a monthly 
@@ -30,7 +27,7 @@ available under a subscription license.
 
 Billed annually
 
-{% if page.perpetual_cost %}
+{% if page.perpetual_cost or page.monthly_cost == 0 %}
 ### Perpetual License Costs
 
 | Customization Manager Standard: $1287
