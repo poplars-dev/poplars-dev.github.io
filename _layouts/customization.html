@@ -13,13 +13,13 @@
 
           <h2>{{ page.name }}
             <small>{{ page.package_name }} -
-                   {% if customization.format == "packaged" %}
+                   {% if page.format == "packaged" %}
                     packaged
                    {% else %}
                     tailored
                    {% endif %}
-                   {% if customization.monthly_cost == 0 %}
-                   - included with Customization Manager Standard
+                   {% if page.monthly_cost == 0 %}
+                   - included with Standard Edition
                     {% endif %}
             </small></h2>
 
