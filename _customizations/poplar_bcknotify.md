@@ -23,9 +23,9 @@ of any items that remain on backorder.
 
 ## How does it work?
 
-When a shipment is posted, the Customer Backorder Notification script checks
-each line in the order.  If any lines have quantity on backorder,
-an email notification is generated based on a user configurable template and
+When a shipment is posted, the Customer Backorder Notification customization
+checks each line in the order.  If any lines have quantity on backorder, an
+email notification is generated based on a user configurable template and
 emailed to the customer based on the A/R Customer delivery method.
 
 ## Pricing
