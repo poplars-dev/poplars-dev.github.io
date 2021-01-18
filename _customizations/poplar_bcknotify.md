@@ -32,7 +32,7 @@ emailed to the customer based on the A/R Customer delivery method.
 
 
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_bcknotify/shipment_entry.png" 
-                      description="Both items in the shipment have quantity on backorder.." %}
+                      description="Both items in the shipment have quantity on backorder." %}
 
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_bcknotify/backorder_email.png" 
                       description="A email is generated from a configurable template and sent to the customer and admin." %}
