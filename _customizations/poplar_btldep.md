@@ -29,7 +29,6 @@ miscellaneous charge.
 Bottle deposits are configured for all applicable items using the Custom Table
 Edit.
 
-
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_btldep/bottle_deposit_entry.png" 
                       description="Entering the bottle deposite for B1-100/0, a large bottle of Cola, in New York." %}
 

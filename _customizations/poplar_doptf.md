@@ -15,7 +15,7 @@ monthly_cost: 50
 perpetual_cost: 1395
 presentation: 
 demo: 
-docs_url: 
+docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_doptf-0.2.4/docs/index.html
 excerpt_separator: <!--more-->
 ---
 
@@ -27,14 +27,29 @@ Sage's normal Optional Fields, they are easy to set up and configure.
 ## How does it work?
 
 The Detail Optional Fields customization adds user configurable 
-optional fields to the Bank Entries view.  For each optional field that
+optional fields to the Bank Entries view.  It depends on optional
+fields being defined in Common Services.
+
+{% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_doptf/optional_field_config.png" 
+                      description="Optional fields are defined in Common Services." %}
+
+Optional fields can then be assigned with a default value to the detail
+view.
+
+{% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_doptf/optional_field_assignment.png" 
+                      description="Assign the CUSTLIST optional field to bank entries." %}
+
+For each optional field that
 is defined, a new column is added to the Bank Entry grid so the values
 can be managed in line.  Optional field values are carried through to the
 G/L entries for the detail lines.
 
-This customization can be tailored to work on any detail view without
-optional fields by default.  Contact us if you have a particular view in
-mind.
+{% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_doptf/detail_grid.png" 
+                      description="The new column is displayed in the detail grid." %}
+
+This customization can be tailored to work on any detail view that doesn't
+support optional fields by default.  Contact us if you have a particular view
+in mind.
 
 ## Features
 

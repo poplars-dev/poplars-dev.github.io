@@ -12,6 +12,11 @@ screens:
 format: packaged
 monthly_cost: 37.50
 perpetual_cost: 858
+base: poplar_oeaddlne
+related:
+    - poplar_btldep
+    - poplar_ecofee
+    - poplar_bvgdep
 excerpt_separator: <!--more-->
 ---
 

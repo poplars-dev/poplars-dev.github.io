@@ -28,7 +28,7 @@ but any logic can be applied to derive the updated G/L account.
 
 The Override G/L Account customization connects to the A/R batch header.
 Before an A/R invoice batch is posted, the customization updates the
-G/L account for all entries in the batch based on the item, location, and
+G/L account for all entries in the batch based on the item, job location, and
 default G/L account.
 
 {% include pricing.html %}

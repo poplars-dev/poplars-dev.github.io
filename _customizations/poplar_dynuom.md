@@ -27,8 +27,6 @@ overriden by an optional field and guides users to only order quantities that
 can be shipped without repacking.
 <!--more-->
 
-## Business Case
-
 Originally conceived to help work through a process change towards standard
 package sizes, this customization makes it easy to temporarily override
 Item Units of Measure and guide users to create orders are in units that can be
@@ -40,6 +38,9 @@ considerable time and cost.
 At the core of the customization is the Dynamic Unit of Measure table, which
 is derived from the Item's I/C Units of Measure and Optional Fields.
 Units defined in optional fields override or supplment those from I/C.
+
+{% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_dynuom/dynamic_uom_note.png" 
+                       description="The Dynamic Unit of Measure table and Note. The Bag unit is overriden to the value of 20. The accompanying note guides the user to select a valid quantity." %}
 
 From the dynamic table, the smallest selling unit (smallest unit greater than
 Each [1]) is identified - this is the smallest package size that can be shipped.

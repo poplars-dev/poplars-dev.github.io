@@ -13,6 +13,10 @@ apps:
 views:
 screens:
 format: tailored
+related:
+    - poplar_apoeselect
+    - poplar_adjref
+    - poplar_doptf
 monthly_cost: 0
 perpetual_cost: 0
 presentation: 
@@ -39,10 +43,9 @@ The {{ page.name }} customization connects to a screen or one of its related
 pop-up screens.  When the screen opens, a new column is automatically added
 to the end of the grid.  
 
-For datasource or optional field columns, the column header, default, 
-valid option lists, and data types 
-can be taken from the related field definition. For computed columns, 
-these must be specified for each case.
+For datasource or optional field columns, the column header, default, valid
+option lists, and data types can be taken from the related optional field
+definition. For computed columns, these must be specified for each case.
 
 Columns are either editable or read-only.  Editable columns write back to
 the underlying data source or optional field as edits are made.

@@ -11,6 +11,8 @@ screens:
 format: packaged
 monthly_cost: 0
 perpetual_cost: 0
+related:
+    - poplar_columns
 presentation: 
 demo: 
 docs_url: 
