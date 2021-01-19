@@ -14,6 +14,11 @@ views:
     - AR0024
     - AR0025
 screens:
+related: 
+    - poplar_ecofee
+    - poplar_btldep
+    - poplar_delcharge
+    - poplar_bvgdep
 format: tailored
 monthly_cost: 50
 perpetual_cost: 1395

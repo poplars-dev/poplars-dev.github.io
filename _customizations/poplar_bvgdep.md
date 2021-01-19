@@ -81,7 +81,7 @@ deposits:
 The demo goes on to demonstrate that even when edited manually, after posting
 the deposits are properly maintained. 
 
-For case where the deposits need to be disabled, the `DEPOVERRIDE` optional 
+When deposits need to be disabled, the `DEPOVERRIDE` optional 
 field can be set to Yes and the customization won't take any actions.
 
 Finally, a larger order with three items, five deposit types, and the two
