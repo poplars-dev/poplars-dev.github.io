@@ -45,7 +45,7 @@ Assign Create, Read, and Update access to users for each permission using
 the handy Permissions Management UI.
 
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_screenperms/chris_permissions.png" 
-                      description="Chris can open set the PO Date on new order and open Order Entry, but can't use the Delete button." %}
+                      description="Chris can open O/E Order Entry but can’t use the Delete button and can only set the date on new POs, not existing ones." %}
 
 For a more detailed walkthough of the configuration and capabilities,
 see the [docs]({{ docs_url }}).
