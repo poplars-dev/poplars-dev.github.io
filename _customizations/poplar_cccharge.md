@@ -29,16 +29,11 @@ If the user chooses to add a charge, a new line is automatically added to the
 order with a configurable miscellaneous charge at the correct percentage.
 <!--more-->
 
-## Business Case
-
 The Credit Card Charge customization automatically calculates and optionally
 applies credit card charges to O/E Order Entry Orders and Quotes based on the
 customer's payment terms or payment code.  Charges are calculated based on the
 pre-tax value of all items in the order and are applied as a miscellaneous
 charge.
-
-This customization helps the operator consistently apply the correct credit
-card charges to orders and quotes.  
 
 ## How does it work?
 

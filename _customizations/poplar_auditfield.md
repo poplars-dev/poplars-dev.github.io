@@ -24,8 +24,8 @@ docs_url:
 excerpt_separator: <!--more-->
 ---
 
-Generate an audit trail for all changes made to an A/R or A/P invoice header 
-and optional fields, or G/L Journal headers and detail lines, by any user
+Generate an audit trail for all changes made to an A/R or A/P invoice header, 
+header optional fields, or G/L Journal headers and detail lines, by any user
 other than the user that initially entered the object.
 <!--more-->
 
@@ -43,7 +43,7 @@ Any number of fields can be monitored for each view.
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_auditfield/config_all_fields.png" 
                       description="Monitor the IDINVC, PONBR, DISCPCT fields on A/P Invoice headers." %}
 
-When a monitored field is changed, if the user manking the change is not the
+When a monitored field is changed, if the user making the change is not the
 user that initially entered the data for the object, the details of the change
 are logged in the Extender Audit Log.
 

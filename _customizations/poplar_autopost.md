@@ -22,7 +22,7 @@ excerpt_separator: <!--more-->
 ---
 
 The Auto-Post Batches with Description customization is designed
-to be run either by hand or periodically using Process Schduler.  
+to be run either by hand or periodically using Process Scheduler.  
 It searches for Batches that are in the 'Ready to Post' 
 state with a specific description and posts them.
 
