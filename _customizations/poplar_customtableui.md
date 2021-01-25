@@ -11,16 +11,19 @@ monthly_cost: 0
 perpetual_cost: 0
 presentation: 
 demo: 
-docs_url: 
+docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_customtableui-1.0.1/docs/index.html
 excerpt_separator: <!--more-->
 ---
 
 Add a Custom UI for any table.  Allow access to custom tables without the 
-need for the custom table editor.  Used as a base for customizations
+need for the custom table editor.  
+
+Used as a base for customizations
 like the [Complaint Form](/customizations/poplar_complaints.html). 
 Pairs seamlessly with 
 [Screen Permissions](/customizations/poplar_screenperms.html) to provide
-permissions at the screen access or control level.
+permissions at the screen access or control level. Integrated with native
+screens using [Callback Columns](/customizations/poplar_columns.html).
 
 <!--more-->
 
