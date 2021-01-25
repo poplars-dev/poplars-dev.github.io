@@ -7,8 +7,8 @@ apps:
 views:
 screens:
 format: tailored
-monthly_cost: 50
-perpetual_cost: 1395
+monthly_cost: 0
+perpetual_cost: 0
 presentation: 
 demo: 
 docs_url: 
@@ -19,6 +19,9 @@ Introduce a new object, a Customer Complaint Form, to Sage.  The form
 is used to collect information on returned or defective products.  Each
 form is tied to an existing Customer and an Item. It captures the nature
 of the complaint, details, and an RMA number if required.
+
+Built on [Custom Table UI](/customizations/poplar_customtableui.html) and
+integrates with [Screen Permissions](/customizations/poplar_screenperms.html).
 
 <!--more-->
 
