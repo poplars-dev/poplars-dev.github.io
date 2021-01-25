@@ -35,6 +35,11 @@ offering to open the invoice in inquiry mode.
 {% if page.demo %}
 ## Demo
 
+The demo begins with the installation of the customization using Customization
+Manager.  After installation and a quick restart of the desktop, the 
+customization begins working immediately.  When the Customer 1200 is entered
+into a new O/E Order, information on the most recent invoice is displayed.
+
 <video width="640" controls>
   <source src="{{ page.demo }}" type="video/mp4">
   Your browser doesn't support the video tag.
