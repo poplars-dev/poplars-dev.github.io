@@ -11,7 +11,7 @@ monthly_cost: 0
 perpetual_cost: 0
 presentation: 
 demo: 
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_customtableui-1.0.1/docs/index.html
+docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_customtableui-1.0.2/docs/index.html
 excerpt_separator: <!--more-->
 ---
 
