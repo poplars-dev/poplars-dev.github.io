@@ -17,6 +17,6 @@ jQuery(function() {
         let code = getURLParameter('code');
         let ap = getURLParameter('api_access_point');
         $('#adobe-sign-code').text(code);
-        $('#adobe-sign-ap').text(ap);
+        $('#adobe-sign-ap').text(unescape(ap));
     });
 });
