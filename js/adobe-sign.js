@@ -14,11 +14,12 @@ jQuery(function() {
     }
 
     $(document).ready(function() {
+        $('#adobe-sign-errors').hide();
         let code = getURLParameter('code');
         let ap = getURLParameter('api_access_point');
         let error = getURLParameter('error_description');
         console.log(error);
-        if (error != "") {
+        if (error) {
             $('#adobe-sign-error').text(unescape(error));
             $('#adobe-sign-errors').show();
         } else {
