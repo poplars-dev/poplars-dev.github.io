@@ -16,7 +16,15 @@ jQuery(function() {
     $(document).ready(function() {
         let code = getURLParameter('code');
         let ap = getURLParameter('api_access_point');
-        $('#adobe-sign-code').text(code);
-        $('#adobe-sign-ap').text(unescape(ap));
+        let error = getURLParameter('error_description');
+        console.log(error);
+        if (error != "") {
+            $('#adobe-sign-error').text(unescape(error));
+            $('#adobe-sign-errors').show();
+        } else {
+            $('#adobe-sign-code').text(code);
+            $('#adobe-sign-ap').text(unescape(ap));
+            $('#adobe-sign-details').show();
+        }
     });
 });
