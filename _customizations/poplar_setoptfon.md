@@ -16,7 +16,6 @@ format: tailored
 monthly_cost: 0
 perpetual_cost: 0
 presentation: 
-demo: 
 docs_url: 
 excerpt_separator: <!--more-->
 ---
@@ -65,27 +64,3 @@ The {{ page.name }} customization requires regular maintainance and is only
 available under a subscription license.
     {% endif %}
 {% endif %}
-
-### Monthly Subscription Costs
-
-| Customization Manager Standard: $50
-| {{ page.name }}: ${{ page.monthly_cost }}
-
-Billed annually
-
-{% if page.perpetual_cost %}
-### Perpetual License Costs
-
-| Customization Manager Standard: $1287
-| {{ page.name }}: ${{ page.perpetual_cost }}
-{% endif %}
-
-Plus 21% Annual Software Assurance
-## Demo
-
-<video width="640" controls>
-  <source src="https://s3.amazonaws.com/dev.expi/content/poplar_addresses/poplar_addresses_demo.mp4" type="video/mp4">
-  Your browser doesn't support the video tag.
-</video>
-
-{% include pricing.html %}
