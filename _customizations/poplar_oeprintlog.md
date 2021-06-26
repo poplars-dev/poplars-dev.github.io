@@ -14,8 +14,9 @@ monthly_cost: 0
 # docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_addresses-0.0.9/docs/index.html
 excerpt_separator: <!--more-->
 ---
-Log O/E Shipment Picking Slip events.
+Log O/E Shipment Picking Slip Print Events.
 <!--more-->
+
 Log all Picking Slip print events in a database table. Capture the following
 information:
 
