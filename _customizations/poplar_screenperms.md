@@ -15,7 +15,7 @@ format: packaged
 monthly_cost: 50
 perpetual_cost: 1395
 presentation: 
-demo: 
+demo: https://s3.amazonaws.com/dev.expi/content/poplar_screenperms/poplar_screenperms.mp4
 docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_screenperms-1.0.6/docs/index.html
 excerpt_separator: <!--more-->
 ---

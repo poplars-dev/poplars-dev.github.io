@@ -4,8 +4,10 @@ order: 5
 name: A/R Receipt Adjustment Optional Fields
 package_name: poplar_adjpromo
 apps:
+  - A/R
 views:
 screens:
+  - AR2100
 format: tailored
 monthly_cost: 75
 # presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing

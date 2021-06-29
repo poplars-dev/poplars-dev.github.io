@@ -12,7 +12,7 @@ format: tailored
 monthly_cost: 1395
 perpetual_cost: 50
 presentation: 
-demo: 
+demo: https://s3.amazonaws.com/dev.expi/content/poplar_oestream/poplar_oestream.mp4
 docs_url: 
 excerpt_separator: <!--more-->
 ---

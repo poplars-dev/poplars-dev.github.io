@@ -15,7 +15,7 @@ format: packaged
 monthly_cost: 0
 perpetual_cost: 0
 presentation: 
-demo: 
+demo: https://s3.amazonaws.com/dev.expi/content/poplar_gridoptf/poplar_gridoptf.mp4 
 docs_url: 
 excerpt_separator: <!--more-->
 ---
