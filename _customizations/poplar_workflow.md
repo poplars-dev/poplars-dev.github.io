@@ -6,9 +6,9 @@ package_name: poplar_workflow
 apps: 
   - VI
 views:
-  - *
+  - \*
 screens:
-  - *
+  - \*
 format: packaged
 monthly_cost: 0
 # presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing
