@@ -27,6 +27,12 @@ a specific use case, or have something completely new that needs building.
 {% for customization in site.customizations %}
     <div class='customization-info' id="{{ customization.name | slugify }}" data-order="{{ customization.order }}">
         <h3><a href="{{ customization.url }}">{{ customization.name }}
+        {% if customization.demo %}
+            <span class='material-icons-outlined inline-icon'>videocam</span>
+        {% endif %}
+        {% if customization.docs_url %}
+            <span class='material-icons-outlined inline-icon'>description</span>
+        {% endif %}
         <small>{% if customization.format == "packaged" %}
                 packaged
                {% else %}
