@@ -62,4 +62,13 @@ Detail Optional Fields:
   managed in line with the related object;
 - optional fields are transcribed to the G/L Entry optional fields.
 
+{% if page.demo %}
+## Demo
+
+<video width="640" controls>
+  <source src="{{ page.demo }}" type="video/mp4">
+  Your browser doesn't support the video tag.
+</video>
+{% endif %}
+
 {% include pricing.html %}

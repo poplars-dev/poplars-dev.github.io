@@ -28,4 +28,13 @@ If the optional field has a validation list, a finder is provided in the grid
 and only valid values are allowed.
 <!--more-->
 
+{% if page.demo %}
+## Demo
+
+<video width="640" controls>
+  <source src="{{ page.demo }}" type="video/mp4">
+  Your browser doesn't support the video tag.
+</video>
+{% endif %}
+
 {% include pricing.html %}

@@ -47,4 +47,13 @@ IC Transfer Security:
 - role based permissions make applying permissions to more than one user simple;
 - automated enforcement of transfer policies.
 
+{% if page.demo %}
+## Demo
+
+<video width="640" controls>
+  <source src="{{ page.demo }}" type="video/mp4">
+  Your browser doesn't support the video tag.
+</video>
+{% endif %}
+
 {% include pricing.html %}
