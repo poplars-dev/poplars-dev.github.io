@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: I/C Long Vendor Descriptions
+name: Long I/C Vendor Item Descriptions
 package_name: poplar_icvendesc
 apps:
     - I/C
@@ -16,7 +16,7 @@ perpetual_cost: 325
 excerpt_separator: <!--more-->
 ---
 
-The I/C Long Vendor Descriptions customization enables the use of
+The {{page.name}} customization enables the use of
 long Vendor Item Descriptions.  It adds a new column to the Vendor
 Item Details screen grid and accepts descriptions of up to 180 characters.
 These descriptions are stored in a custom table and are easily included
@@ -34,7 +34,7 @@ can be tuned to support descriptions of up to 250 characters.
 
 ## How does it work?
 
-The I/C Long Vendor Descriptions customization installs a new table used
+The {{page.name}} customization installs a new table used
 to map long descriptions to vendors items. It adds a new column to the
 I/C Vendor Items grid so the description can be managed in line with 
 all other vendor item details.

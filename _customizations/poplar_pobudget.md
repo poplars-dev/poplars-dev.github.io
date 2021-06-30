@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: P/O Budget
+name: Track Remaining Customer P/O Budget
 package_name: poplar_pobudget
 apps:
     - O/E

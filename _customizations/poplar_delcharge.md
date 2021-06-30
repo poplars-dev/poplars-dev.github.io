@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Delivery Charges
+name: Add Delivery Charge to Small Orders
 package_name: poplar_delcharge
 apps:
     - O/E
@@ -18,7 +18,7 @@ docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_delcharge-1.0.0/
 excerpt_separator: <!--more-->
 ---
 
-The Delivery Charges customization automatically adds a delivery charge to 
+The {{page.name}} customization automatically adds a delivery charge to 
 orders less than a minimum order amount.  The delivery charge and minimum
 order amount are based on the Customer's Customer Group.
 <!--more-->
@@ -58,7 +58,7 @@ The demo below demonstrates the setup and features of the customization, includi
 - Override automation by setting the Delivery Charge Override optional field on the order header.
 
 <video width="640" controls>
-  <source src="https://s3.amazonaws.com/dev.expi/content/poplar_delcharge/poplar_delcharge_demo_cut.mp4" type="video/mp4">
+  <source src="{{ page.demo }}" type="video/mp4">
   Your browser doesn't support the video tag.
 </video>
 

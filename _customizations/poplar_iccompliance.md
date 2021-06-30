@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Item Compliance
+name: Item Ship-To Restrictions
 package_name: poplar_iccompliance
 apps:
     - O/E
@@ -15,7 +15,7 @@ montly_cost: 75
 perpetual_cost: 2145
 ---
 
-The Item Compliance customization stops users from 
+The {{page.name}} customization stops users from 
 adding lines for items that cannot be shipped to the order ship-to location.
 
 This customization provides fine-grained control, to the postal code,
@@ -31,7 +31,7 @@ prohibiting non-compliant items from being ordered.
 
 ## How does it work?
 
-The Item Compliance customization is bespoke and must be tailored to the 
+This customization is bespoke and must be tailored to the 
 specific customer requirements.  This version uses a custom table
 to map an optional field name to a country, state, and postal code.
 

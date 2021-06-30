@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Columns
+name: Add Columns to Grid
 package_name: poplar_columns
 apps:
     - A/P

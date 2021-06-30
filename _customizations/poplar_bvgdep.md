@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Beverage Deposits
+name: Add Beverage Container Deposits to Orders
 package_name: poplar_bvgdep
 apps:
     - O/E

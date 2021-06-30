@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: A/R Price Lists
+name: Maintain A/R Price Lists per Customer-Item
 package_name: poplar_arpricelist
 presentation: https://docs.google.com/presentation/d/1b3_Azo9zlphmyBBS_ERaalot6EilAHchNRkr47HYnng/edit?usp=sharing
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_arpricelist/poplar_arpricelist_demo.mp4
@@ -18,9 +18,9 @@ excerpt_separator: <!--more-->
 format: packaged
 ---
 
-The AR Price List module enables Sage users to maintain custom per Customer,
-per Item, pricing.  It can be used when Sage's price list functionality is not
-available.
+The {{ page.name }} customization enables Sage users to maintain custom per
+Customer, per Item, pricing.  It can be used when Sage's price list
+functionality is not available.
 
 The customization comes with both a screen script, to automatically update
 prices as items are input into the AR Invoice entry scren, and an optional 

@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Set Optional Field on Event
+name: Set Optional Field upon Event
 package_name: poplar_setoptfon
 apps:
     - A/P
@@ -49,18 +49,4 @@ to the base cost for the customization, laid out below. For a free assessment
 and quote,  <a href="mailto:chris@poplars.dev">contact us</a>.  
 {% endif %}
 
-{% if page.monthly_cost == 0 %}
-The {{ page.name }} customization is included with a Customization Manager 
-Standard license.  
-
-Customization Manager Standard is offered either on a monthly 
-subscription or with a perpetual license.
-{% else %}
-    {% if page.perpetual_cost %}
-The {{ page.name }} customization is offered either on a monthly 
-subscription or a perpetual license.
-    {% else %}
-The {{ page.name }} customization requires regular maintainance and is only
-available under a subscription license.
-    {% endif %}
-{% endif %}
+{% include pricing.html %}

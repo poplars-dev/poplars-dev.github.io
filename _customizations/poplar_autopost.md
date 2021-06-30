@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Auto-Post Batches with Description
+name: Auto-Post Batches with Specified Description
 package_name: poplar_autopost
 integrations:
     - Process Scheduler
@@ -21,26 +21,16 @@ perpetual_cost: 858
 excerpt_separator: <!--more-->
 ---
 
-The Auto-Post Batches with Description customization is designed
+The {{page.name}} customization is designed
 to be run either by hand or periodically using Process Scheduler.  
 It searches for Batches that are in the 'Ready to Post' 
 state with a specific description and posts them.
 
-This customization is generally used to automatically post batches
+This customization is often used to automatically post batches
 created through external integrations. The external program sets the
 batch description to a specific string and the batches are posted
 automatically by the customization.
 <!--more-->
-
-## Business Case
-This customization is used to Automatically Post Batches with a specific
-description and is most often used as the final step in a workflow or to
-post batches created by external programs.  
-
-The customization finds all batches in a ready to post state with a
-matching description and posts them.  This customization can be a key component
-in a complete, end-to-end, workflow that completes the posting of the batch 
-after it has been created or approved by an external program.
 
 ## How does it work?
 

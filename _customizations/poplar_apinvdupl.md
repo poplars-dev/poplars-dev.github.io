@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: A/P Invoice Duplicates
+name: Duplicate A/P Invoice Number Detection
 package_name: poplar_apinvdupl
 integrations:
     - Information Manager
@@ -18,7 +18,7 @@ docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_apinvdupl-1.6.1/
 excerpt_separator: <!--more-->
 ---
 
-The A/P Invoice Duplicates customization integrates with Information
+The {{page.name}} customization integrates with Information
 Manager Notes to display any duplicate A/P Invoices Numbers across vendors.  
 Duplicate detection is done with SQL to provide quick responses
 and the accompanying note allows the user to quickly drill down into

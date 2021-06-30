@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 2
-name: Country Codes, State Codes, and Embargoes
+name: Validate Country, State, Embargoes
 package_name: poplar_isocodes
 presentation: https://docs.google.com/presentation/d/190-xBBTfboE2PLqiuN29h-Lsy_C3vISrYnvoZsMvCDU/edit?usp=sharing 
 apps:
@@ -21,7 +21,7 @@ excerpt_separator: <!--more-->
 format: packaged
 ---
 
-The ISO Codes and Embargoes customization enforces the use of valid ISO-3166
+The {{page.name}} customization enforces the use of valid ISO-3166
 Country and State codes in any address fields in Sage and stops addresses from
 being entered for embargoed countries.
 <!--more-->

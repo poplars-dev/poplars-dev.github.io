@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Audit Field Changes by Users
+name: Field Change Audit Logging
 package_name: poplar_auditfield
 apps:
     - A/P
@@ -31,7 +31,7 @@ other than the user that initially entered the object.
 
 ## How does it work?
 
-The Audit Field Changes by User customization install a custom table that is 
+The {{page.name}} customization installs a custom table that is 
 used to define which fields of the headers should be monitored for changes.
 
 {% include figure.html url="https://s3.amazonaws.com/dev.expi/content/poplar_auditfield/config_select_view.png" 

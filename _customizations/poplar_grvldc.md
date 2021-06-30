@@ -1,7 +1,7 @@
 ---
 layout: customization
 order: 5
-name: Mix and Match Volume Discounts
+name: Apply Volume Discounts
 package_name: poplar_grvldc
 apps:
     - O/E
@@ -21,7 +21,6 @@ excerpt_separator: <!--more-->
 Automatically apply additional discounts to order lines when the 
 total volume ordered over a user-defined group of items exceeds a 
 minimum quantity.
-
 <!--more-->
 
 ## Business Case
