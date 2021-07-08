@@ -10,6 +10,7 @@ screens:
     - AP2100
 apps:
     - A/P
+demo: https://s3.amazonaws.com/dev.expi/content/poplar_uniqappo/poplar_uniqappo.mp4
 format: packaged
 ---
 
@@ -27,4 +28,17 @@ If so, the user is notified that the PO is a duplicate.
 In the event that a duplicate PO Number is in place when the entry is saved,
 the save will be stopped and a warning issued to the user.
 
+{% if page.demo %}
+## Demo
+
+The demo below begins with the default Sage behaviour, which allows PO Numbers
+to be reused across multiple A/P Invoice entries.  Using Customization Manager,
+the {{page.name}} customization is installed and then the added validation on
+the PO Number field is demonstrated.
+
+<video width="640" controls>
+  <source src="{{ page.demo }}" type="video/mp4">
+  Your browser doesn't support the video tag.
+</video>
+{% endif %}
 {% include pricing.html %}
