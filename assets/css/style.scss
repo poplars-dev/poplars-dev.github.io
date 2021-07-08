@@ -118,8 +118,22 @@ h2 small {
 
 // icons
 .inline-icon {
-    vertical-align: text-bottom
+    vertical-align: text-bottom;
+    cursor: help;
 }
+
+.success {
+    color: $sol-green;
+}
+
+.warning {
+    color: $sol-yellow;
+}
+
+.error {
+    color: $sol-orange;
+}
+
 
 /* Rules for sizing the icon. */
 .material-icons-outlined.md-18 { font-size: 18px; }

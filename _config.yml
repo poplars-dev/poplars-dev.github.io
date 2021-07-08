@@ -16,3 +16,21 @@ collections:
         sort_by: order
 
 google_analytics: G-78HPF3112N
+
+defaults:
+    - scope:
+        path: ""
+        type: "customizations"
+      values:
+        layout: "customization"
+        order: 5
+        apps: 
+        views:
+        screens:
+        format: "tailored"
+        monthly_cost: 0
+        presentation: 
+        demo:
+        docs:
+        webscreen:
+        excerpt_separator: "<!--more-->"

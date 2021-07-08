@@ -12,7 +12,7 @@ format: packaged
 monthly_cost: 25
 perpetual_cost: 645
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

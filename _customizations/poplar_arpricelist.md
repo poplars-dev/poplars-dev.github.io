@@ -5,7 +5,7 @@ name: Maintain A/R Price Lists per Customer-Item
 package_name: poplar_arpricelist
 presentation: https://docs.google.com/presentation/d/1b3_Azo9zlphmyBBS_ERaalot6EilAHchNRkr47HYnng/edit?usp=sharing
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_arpricelist/poplar_arpricelist_demo.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_arpricelist-1.1.4/docs/index.html 
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_arpricelist-1.1.4/docs/index.html 
 screens:
     - AR2100
 apps:

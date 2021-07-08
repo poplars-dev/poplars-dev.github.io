@@ -1,0 +1,38 @@
+<div id="customization-list">
+{% for customization in include.customizations %}
+    <div class='customization-info' id="{{ customization.name | slugify }}" 
+            data-order="{{ customization.order }}">
+        <h3><a href="{{ customization.url }}">{{ customization.name }}</a>
+        {% if customization.demo %}
+            <span class='material-icons-outlined inline-icon'
+                  title='Demo Video Available'>videocam</span>
+        {% endif %}
+        {% if customization.docs %}
+            <span class='material-icons-outlined inline-icon'
+                  title='Documentation Available'>description</span>
+        {% endif %}
+        {% if customization.screen == 'tested' %}
+            <span class='material-icons-outlined inline-icon success'
+                  title='Webscreen Compatible'>cloud_done</span>
+        {% elsif customization.screens %}
+            <!-- <span class='material-icons-outlined inline-icon warning'
+                title='Webscreen Incompatible'>cloud_off</span> -->
+        {% else %}
+            <span class='material-icons-outlined inline-icon warning'
+                  title='Webscreen Capable'>cloud</span>
+        {% endif %}
+        <small>{% if customization.format == "packaged" %}
+                packaged
+               {% else %}
+                tailored
+               {% endif %}
+               {% if customization.monthly_cost == 0 %}
+               - included with Standard Edition
+                {% endif %}
+        </small></h3>
+        <div class="customization-excerpt">
+            {{ customization.excerpt }}
+        </div>
+    </div>
+{% endfor %}
+</div>

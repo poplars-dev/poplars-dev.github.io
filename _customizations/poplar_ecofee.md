@@ -16,7 +16,7 @@ monthly_cost: 50
 perpetual_cost: 1395
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_ecofee/poplar_ecofee.mp4
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

@@ -16,7 +16,7 @@ monthly_cost: 50
 perpetual_cost: 1395
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_screenperms/poplar_screenperms.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_screenperms-1.0.6/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_screenperms-1.0.6/docs/index.html
 excerpt_separator: <!--more-->
 ---
 
@@ -48,7 +48,7 @@ the handy Permissions Management UI.
                       description="Chris can open O/E Order Entry but can’t use the Delete button and can only set the date on new POs, not existing ones." %}
 
 For a more detailed walkthough of the configuration and capabilities,
-see the [docs]({{ docs_url }}).
+see the [docs]({{ docs }}).
 
 {% if page.demo %}
 ## Demo

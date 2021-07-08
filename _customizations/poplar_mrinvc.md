@@ -14,7 +14,7 @@ monthly_cost: 0
 perpetual_cost: 0
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_mrinvc/poplar_mrinvc_demo.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_mrinvc-1.1.3/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_mrinvc-1.1.3/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

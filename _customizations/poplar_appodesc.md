@@ -14,7 +14,7 @@ monthly_cost: 0
 perpetual_cost: 0
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_appodesc/poplar_appodesc.mp4
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 When a new A/P Invoice Batch is created, if it was generated from P/O,

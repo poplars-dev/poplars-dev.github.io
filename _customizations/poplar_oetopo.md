@@ -17,7 +17,7 @@ monthly_cost: 75
 perpetual_cost: 2145
 presentation: 
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

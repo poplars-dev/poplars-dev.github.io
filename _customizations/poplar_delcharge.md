@@ -14,7 +14,7 @@ monthly_cost: 50
 perpetual_cost: 1395
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_delcharge/poplar_delcharge_demo_cut.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_delcharge-1.0.0/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_delcharge-1.0.0/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

@@ -13,7 +13,7 @@ monthly_cost: 1395
 perpetual_cost: 50
 presentation: 
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_oestream/poplar_oestream.mp4
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

@@ -14,7 +14,7 @@ monthly_cost: 37.50
 perpetual_cost: 858
 presentation: 
 demo: 
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_cmtqty-1.0.4/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_cmtqty-1.0.4/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

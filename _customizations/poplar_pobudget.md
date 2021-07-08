@@ -17,7 +17,7 @@ perpetual_cost: 2925
 format: tailored
 presentation: 
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

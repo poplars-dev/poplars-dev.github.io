@@ -15,7 +15,7 @@ related:
     - poplar_columns
 presentation: 
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

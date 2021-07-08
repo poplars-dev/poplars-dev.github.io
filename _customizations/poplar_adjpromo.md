@@ -16,7 +16,7 @@ monthly_cost: 75
 perpetual_cost: 2145
 presentation: 
 demo: 
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_adjpromo-1.2.0/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_adjpromo-1.2.0/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

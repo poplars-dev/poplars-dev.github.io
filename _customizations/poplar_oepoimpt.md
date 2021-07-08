@@ -16,7 +16,7 @@ format: tailored
 monthly_cost: 50
 presentation: 1395
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

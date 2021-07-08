@@ -1,6 +1,4 @@
 ---
-layout: customization
-order: 5
 name: A/P Tax Number Security
 package_name: poplar_apsecaud
 apps:
@@ -9,12 +7,11 @@ views:
     - AP0015
 screens:
     - AP1200
+    - AP3100
 format: packaged
 monthly_cost: 0
 perpetual_cost: 0
 presentation: 
-demo: 
-docs_url: 
 excerpt_separator: <!--more-->
 ---
 

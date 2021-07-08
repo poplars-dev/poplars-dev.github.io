@@ -11,7 +11,7 @@ monthly_cost: 0
 perpetual_cost: 0
 presentation: 
 demo: 
-docs_url: 
+docs: 
 excerpt_separator: <!--more-->
 ---
 

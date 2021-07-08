@@ -10,7 +10,7 @@ format: tailored
 monthly_cost: 100
 # presentation: https://docs.google.com/presentation/d/15o8onqIndm_ARzEtfFufTsxpMcCM2YxC9wkvMXzwmrM/edit?usp=sharing
 # demo: https://s3.amazonaws.com/dev.expi/content/poplar_addresses/poplar_addresses_demo.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_contractmin-1.0.12/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_contractmin-1.0.12/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

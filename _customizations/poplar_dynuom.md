@@ -18,7 +18,7 @@ monthly_cost: 100
 perpetual_cost: 2925
 presentation: 
 demo: 
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_dynuom-1.0.10/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_dynuom-1.0.10/docs/index.html
 excerpt_separator: <!--more-->
 ---
 

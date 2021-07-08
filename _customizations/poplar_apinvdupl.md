@@ -13,7 +13,7 @@ views:
 format: packaged
 monthly_cost: 37.50
 perpetual_cost: 1180
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_apinvdupl-1.6.1/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_apinvdupl-1.6.1/docs/index.html
 #presentation: https://docs.google.com/presentation/d/1i7vD8uiVQheYOGpqWD9OxqYtNEuk7SwG71_I1hXmI4I/edit?usp=sharing
 excerpt_separator: <!--more-->
 ---

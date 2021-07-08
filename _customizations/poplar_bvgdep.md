@@ -15,7 +15,7 @@ format: packaged
 monthly_cost: 50
 presentation: 1395
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_bvgdep/poplar_bvgdep_demo.mp4
-docs_url: https://s3.amazonaws.com/dev.expi/media/public/poplar_bvgdep-1.0.4/docs/index.html
+docs: https://s3.amazonaws.com/dev.expi/media/public/poplar_bvgdep-1.0.4/docs/index.html
 excerpt_separator: <!--more-->
 ---
 
