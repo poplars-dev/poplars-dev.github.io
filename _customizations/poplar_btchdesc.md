@@ -12,7 +12,6 @@ views:
 apps:
     - A/P
     - A/R
-    - B/K
     - G/L
 demo: https://s3.amazonaws.com/dev.expi/content/poplar_btchdesc/poplar_btchdesc.mp4
 format: packaged
@@ -30,6 +29,21 @@ is automatically copied to the G/L batch.
 
 If the G/L batch is configured to auto-post, the description is set before
 the post takes place, maintaining it through to the posted G/L.
+
+## Supported Batch Types
+
+The following batch types have been tested:
+
+- A/R Invoice
+- A/R Receipt (Payment)
+- A/R Adjustment
+- A/P Invoice
+- A/P Payment
+- A/P Adjustment
+
+The customization can be extended to include other batch types, just 
+<a href="mailto:chris@poplars.dev?subject=poplar_btchdesc:%20New%20Type%20Request">
+let me know</a>.
 
 {% if page.demo %}
 ## Demo
