@@ -8,7 +8,7 @@ apps:
 views:
     - OE0500
 screens:
-format: packaged
+format: tailored
 monthly_cost: 25
 perpetual_cost: 645
 demo: 
