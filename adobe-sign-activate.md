@@ -8,7 +8,7 @@ Thank you for activating Remote Actions with Adobe Sign.
 
 <div id="adobe-sign-details" style="display:none;">
 <p>
-Your API Access Point is <span id="adobe-sign-ap" class="adobe-sign-key"></span>
+Your API Access Point is <span id="adobe-sign-ap" class="adobe-sign-key">https://\<shard\>.documents.adobe.com</span>
 and the Connection Code is <span id="adobe-sign-code" class="adobe-sign-key"></span>
 </p>
 <p>
