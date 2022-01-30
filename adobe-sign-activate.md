@@ -12,7 +12,8 @@ Your API Access Point is <span id="adobe-sign-ap" class="adobe-sign-key">https:/
 and the Connection Code is <span id="adobe-sign-code" class="adobe-sign-key"></span>
 </p>
 <p>
-Copy these values into the Remote Actions Adobe Sign Configuration
+Copy the connection code and access point, replacing <i>{shard}</i> with your shard, 
+into the Remote Actions Adobe Sign Configuration
 to complete the connection.
 </p>
 </div>
