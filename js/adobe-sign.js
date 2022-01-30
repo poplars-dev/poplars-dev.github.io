@@ -24,7 +24,7 @@ jQuery(function() {
             $('#adobe-sign-errors').show();
         } else {
             $('#adobe-sign-code').text(code);
-            $('#adobe-sign-ap').text(unescape(ap));
+            // $('#adobe-sign-ap').text(unescape(ap));
             $('#adobe-sign-details').show();
         }
     });
