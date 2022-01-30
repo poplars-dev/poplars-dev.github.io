@@ -24,7 +24,7 @@ to complete the connection.
 </div>
 
 
-If you have any trouble, please <a href="support@orchid.systems">contact us</a>.
+If you have any trouble, please <a href="mailto:support@orchid.systems">contact us</a>.
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="/js/adobe-sign.js"></script>
